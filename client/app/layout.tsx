@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "IP Guardian - Advanced IP Blocking & Network Security",
   description: "Comprehensive IP management, analysis, and security platform with advanced threat detection and geolocation features",
-    generator: 'v0.app'
+  generator: 'SecureNet Shield'
 }
 
 export default function RootLayout({
