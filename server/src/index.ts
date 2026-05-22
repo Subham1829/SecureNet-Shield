@@ -5,7 +5,7 @@ import exportsRouter from "./routes/exports.js"
 
 const app = express()
 const PORT = Number(process.env.PORT) || 4000
-const HOST = process.env.HOST || "0.0.0.0"
+const HOST = process.env.HOST || "localhost"
 const isProduction = process.env.NODE_ENV === "production"
 
 app.use(
