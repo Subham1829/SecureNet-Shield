@@ -1,0 +1,18 @@
+# Deploy the API on Render: https://render.com
+# After deploy, set API_URL on Vercel to your Render service URL.
+
+services:
+  - type: web
+    name: securenet-api
+    runtime: node
+    rootDir: server
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: CLIENT_URL
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
