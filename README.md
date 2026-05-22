@@ -1,63 +1,78 @@
 # SecureNet Shield (IP Guardian)
 
-Monorepo with a **Next.js frontend** (`client/`) and **Express API** (`server/`).
+Monorepo: **Next.js** frontend in `client/`, **Express** API in `server/`.
 
 ## Project structure
 
 ```
-├── client/          # Next.js frontend (pages, components, UI)
-├── server/          # Express backend (export file API)
-└── package.json     # Run both with npm run dev
+├── client/          # Next.js frontend
+├── server/          # Express API + export file storage
+├── package.json     # Run both apps from the root
+├── render.yaml      # Backend deploy (Render)
+└── README.md
 ```
 
 ## Quick start
 
-Install dependencies for both apps:
-
 ```bash
 npm install
 npm run install:all
-```
-
-Run frontend + backend together:
-
-```bash
 npm run dev
 ```
 
-| Service  | URL                      |
-|----------|--------------------------|
-| Frontend | http://localhost:3000  |
-| API      | http://localhost:4000  |
+| Service  | URL                     |
+|----------|-------------------------|
+| Frontend | http://localhost:3000 |
+| API      | http://localhost:4000 |
 
-The client proxies `/api/*` to the server (see `client/next.config.mjs`).
+## Scripts (root)
 
-### Run separately
-
-```bash
-npm run dev:server   # API on port 4000
-npm run dev:client   # Next.js on port 3000
-```
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start client + server |
+| `npm run dev:client` | Next.js only |
+| `npm run dev:server` | API only |
+| `npm run build` | Build client |
+| `npm run build:server` | Build server |
+| `npm run install:all` | Install client & server deps |
 
 ## Environment variables
 
-**Server** (`server/.env` optional):
+**Client** — copy `client/.env.example` to `client/.env.local`:
+
+- `API_URL` — backend URL for Next.js rewrites (default `http://localhost:4000`)
+
+**Server** — copy `server/.env.example` to `server/.env`:
 
 - `PORT` — default `4000`
-- `CLIENT_URL` — CORS origin, default `http://localhost:3000`
+- `CLIENT_URL` — CORS origin (your frontend URL in production)
+- `ALLOWED_ORIGINS` — optional comma-separated extra origins
 
-**Client** (`client/.env.local` optional):
+## Deployment
 
-- `API_URL` — backend URL for Next.js rewrites, default `http://localhost:4000`
+### Frontend (Vercel)
+
+1. Import repo on [Vercel](https://vercel.com).
+2. Set **Root Directory** to `client`.
+3. Add environment variable: `API_URL` = your deployed API URL (e.g. `https://securenet-api.onrender.com`).
+
+### Backend (Render)
+
+1. Connect repo on [Render](https://render.com) or use `render.yaml`.
+2. Service **Root Directory**: `server`.
+3. Set `CLIENT_URL` to your Vercel app URL (e.g. `https://your-app.vercel.app`).
+4. Optional: `ALLOWED_ORIGINS` for preview deployments.
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for step-by-step details.
 
 ## API routes
 
+- `GET /health` — health check
 - `POST /api/exports` — save export file
 - `GET /api/exports?filename=` — download file
 - `GET /api/exports?action=list` — list files
 - `DELETE /api/exports?filename=` — delete file
 - `GET /api/exports/bulk` — storage stats
 - `DELETE /api/exports/bulk` — bulk delete
-- `GET /health` — health check
 
 Export files are stored in `server/exports/`.
