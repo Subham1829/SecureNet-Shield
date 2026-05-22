@@ -8,7 +8,6 @@ Monorepo: **Next.js** frontend in `client/`, **Express** API in `server/`.
 ├── client/          # Next.js frontend
 ├── server/          # Express API + export file storage
 ├── package.json     # Run both apps from the root
-├── render.yaml      # Backend deploy (Render)
 └── README.md
 ```
 
@@ -56,12 +55,11 @@ npm run dev
 2. Set **Root Directory** to `client`.
 3. Add environment variable: `API_URL` = your deployed API URL (e.g. `https://securenet-api.onrender.com`).
 
-### Backend (Render)
+### Backend
 
-1. Connect repo on [Render](https://render.com) or use `render.yaml`.
-2. Service **Root Directory**: `server`.
-3. Set `CLIENT_URL` to your Vercel app URL (e.g. `https://your-app.vercel.app`).
-4. Optional: `ALLOWED_ORIGINS` for preview deployments.
+1. Deploy the API from the `server` folder on your chosen host.
+2. Set `CLIENT_URL` to your frontend URL in production.
+3. Optional: `ALLOWED_ORIGINS` for preview deployments.
 
 See [DEPLOYMENT.md](./DEPLOYMENT.md) for step-by-step details.
 
