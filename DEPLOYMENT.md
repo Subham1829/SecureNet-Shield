@@ -5,22 +5,21 @@
 | App | Folder | Platform | Default URL |
 |-----|--------|----------|-------------|
 | Frontend | `client/` | [Vercel](https://vercel.com) | `https://your-app.vercel.app` |
-| API | `server/` | [Render](https://render.com) | `https://your-api.onrender.com` |
+| API | `server/` | Your chosen host | `https://your-api.example.com` |
 
 Deploy the **API first**, then set `API_URL` on Vercel to the API URL.
 
 ---
 
-## 1. Deploy API (Render)
+## 1. Deploy API
 
-1. Go to [Render Dashboard](https://dashboard.render.com) → **New** → **Blueprint** or **Web Service**.
-2. Connect [Soumipal56/soumi_SecureNet-Shield](https://github.com/Soumipal56/soumi_SecureNet-Shield).
-3. Use **Root Directory**: `server`.
-4. **Build command**: `npm install && npm run build`
-5. **Start command**: `npm start`
-6. **Health check path**: `/health`
+1. Deploy the `server` folder to your chosen host.
+2. Use **Root Directory**: `server`.
+3. **Build command**: `npm install && npm run build`
+4. **Start command**: `npm start`
+5. **Health check path**: `/health`
 
-### Environment variables (Render)
+### Environment variables
 
 | Variable | Example |
 |----------|---------|
@@ -28,7 +27,7 @@ Deploy the **API first**, then set `API_URL` on Vercel to the API URL.
 | `CLIENT_URL` | `https://your-app.vercel.app` |
 | `ALLOWED_ORIGINS` | `https://your-app.vercel.app,https://your-app-*.vercel.app` (optional) |
 
-Copy your Render service URL, e.g. `https://securenet-api.onrender.com`.
+Copy your API service URL, e.g. `https://securenet-api.example.com`.
 
 ---
 
