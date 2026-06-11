@@ -78,18 +78,36 @@ export default function DashboardPage() {
   const [storageStats, setStorageStats] = useState<any>(null)
   const [isExporting, setIsExporting] = useState(false)
 
+  const handleLogout = () => {
+    localStorage.removeItem("token")
+    window.location.href = "/login"
+  }
+
   // Add useEffect to load storage stats and dashboard stats
   useEffect(() => {
+    const token = localStorage.getItem("token")
+    if (!token) {
+      window.location.href = "/login"
+      return
+    }
     loadStorageStats()
     fetchDashboardStats()
   }, [])
 
   const fetchDashboardStats = async () => {
     try {
-      const response = await fetch(apiUrl("/api/stats"))
+      const token = localStorage.getItem("token")
+      const response = await fetch(apiUrl("/api/stats"), {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
       if (response.ok) {
         const data = await response.json()
         setStats(data)
+      } else if (response.status === 401) {
+        localStorage.removeItem("token")
+        window.location.href = "/login"
       }
     } catch (err) {
       console.error("Failed to fetch dashboard stats", err)
@@ -202,9 +220,13 @@ export default function DashboardPage() {
     }
 
     try {
+      const token = localStorage.getItem("token")
       const response = await fetch(apiUrl("/api/blocked-ips"), {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}` 
+        },
         body: JSON.stringify({ ip: ipInput, reason: blockReason }),
       })
 
@@ -213,6 +235,9 @@ export default function DashboardPage() {
         setBlockReason("")
         fetchBlockedIPs()
         setStats((prev) => ({ ...prev, blockedIPs: prev.blockedIPs + 1 }))
+      } else if (response.status === 401) {
+        localStorage.removeItem("token")
+        window.location.href = "/login"
       } else {
         const errorData = await response.json()
         alert(`Error: ${errorData.error || "Failed to block IP"}`)
@@ -236,10 +261,18 @@ export default function DashboardPage() {
 
   const fetchBlockedIPs = async () => {
     try {
-      const response = await fetch(apiUrl("/api/blocked-ips"))
+      const token = localStorage.getItem("token")
+      const response = await fetch(apiUrl("/api/blocked-ips"), {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
       if (response.ok) {
         const data = await response.json()
         setBlockedIPs(data)
+      } else if (response.status === 401) {
+        localStorage.removeItem("token")
+        window.location.href = "/login"
       }
     } catch (err) {
       console.error("Failed to fetch blocked IPs", err)
@@ -249,13 +282,20 @@ export default function DashboardPage() {
   const unblockIP = async (ip: string) => {
     if (!confirm(`Are you sure you want to unblock ${ip}?`)) return
     try {
+      const token = localStorage.getItem("token")
       const response = await fetch(apiUrl(`/api/blocked-ips/${encodeURIComponent(ip)}`), {
         method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
       })
       if (response.ok) {
         alert(`IP ${ip} has been unblocked.`)
         fetchBlockedIPs()
         setStats((prev) => ({ ...prev, blockedIPs: prev.blockedIPs - 1 }))
+      } else if (response.status === 401) {
+        localStorage.removeItem("token")
+        window.location.href = "/login"
       } else {
         alert("Failed to unblock IP.")
       }
@@ -539,12 +579,10 @@ export default function DashboardPage() {
         <Button
           variant="ghost"
           className="w-full justify-start text-slate-300 hover:text-white hover:bg-slate-800"
-          asChild
+          onClick={handleLogout}
         >
-          <Link href="/auth">
-            <LogOut className="mr-3 h-4 w-4" />
-            Logout
-          </Link>
+          <LogOut className="mr-3 h-4 w-4" />
+          Logout
         </Button>
       </div>
     </div>

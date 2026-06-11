@@ -65,6 +65,9 @@ export default function LoginPage() {
       if (!response.ok) {
         setErrors({ form: data.error || data.message || "Login failed" })
       } else {
+        if (data.token) {
+          localStorage.setItem("token", data.token)
+        }
         setSuccess("Authentication successful! Redirecting to dashboard...")
         setTimeout(() => {
           window.location.href = "/dashboard"

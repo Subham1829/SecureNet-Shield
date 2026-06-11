@@ -2,6 +2,7 @@ import { Router } from "express"
 import { z } from "zod"
 import { addBlockedIP, listBlockedIPs, removeBlockedIP } from "../controllers/blocked-ips.controller.js"
 import { validateRequest } from "../middlewares/validate.middleware.js"
+import { authMiddleware } from "../middlewares/auth.middleware.js"
 
 const router = Router()
 
@@ -20,6 +21,8 @@ const removeBlockedIPSchema = z.object({
     ip: z.string().regex(ipRegex, "Invalid IP address format"),
   }),
 })
+
+router.use(authMiddleware)
 
 router.get("/", listBlockedIPs)
 

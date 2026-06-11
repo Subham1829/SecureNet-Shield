@@ -109,6 +109,9 @@ export default function RegisterPage() {
       if (!response.ok) {
         setErrors({ form: data.error || data.message || "Registration failed" })
       } else {
+        if (data.token) {
+          localStorage.setItem("token", data.token)
+        }
         setSuccess("Account created successfully! Redirecting to dashboard...")
         setTimeout(() => {
           window.location.href = "/dashboard"

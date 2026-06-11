@@ -5,16 +5,6 @@ import { User } from "../models/User.js"
 
 const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret_do_not_use_in_prod"
 
-// Helper function to set JWT cookie
-const setTokenCookie = (res: Response, token: string) => {
-  res.cookie("token", token, {
-    httpOnly: true, // Prevents JS access to the cookie (XSS protection)
-    secure: process.env.NODE_ENV === "production", // Requires HTTPS in prod
-    sameSite: "lax", // CSRF protection
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-  })
-}
-
 export const registerUser = async (req: Request, res: Response) => {
   try {
     const { fullName, email, password } = req.body
@@ -40,12 +30,10 @@ export const registerUser = async (req: Request, res: Response) => {
     // Generate token
     const token = jwt.sign({ id: newUser._id }, JWT_SECRET, { expiresIn: "7d" })
 
-    // Set cookie
-    setTokenCookie(res, token)
-
     return res.status(201).json({
       success: true,
       message: "User registered successfully",
+      token,
       user: { id: newUser._id, fullName: newUser.fullName, email: newUser.email },
     })
   } catch (error) {
@@ -73,12 +61,10 @@ export const loginUser = async (req: Request, res: Response) => {
     // Generate token
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" })
 
-    // Set cookie
-    setTokenCookie(res, token)
-
     return res.json({
       success: true,
       message: "Login successful",
+      token,
       user: { id: user._id, fullName: user.fullName, email: user.email },
     })
   } catch (error) {
@@ -88,6 +74,5 @@ export const loginUser = async (req: Request, res: Response) => {
 }
 
 export const logoutUser = async (req: Request, res: Response) => {
-  res.clearCookie("token")
   return res.json({ success: true, message: "Logged out successfully" })
 }
