@@ -48,6 +48,7 @@ import { Progress } from "@/components/ui/progress"
 
 // Import the export service at the top
 import { ExportService } from "@/lib/export-service"
+import { apiUrl } from "@/lib/api"
 
 export default function DashboardPage() {
   const [ipInput, setIpInput] = useState("")
@@ -62,10 +63,10 @@ export default function DashboardPage() {
 
   // Dashboard stats
   const [stats, setStats] = useState({
-    totalIPs: 1247,
-    blockedIPs: 89,
-    threatsBlocked: 156,
-    uptime: 99.9,
+    totalIPs: 0,
+    blockedIPs: 0,
+    threatsBlocked: 0,
+    uptime: 0,
   })
 
   // Replace the export history state and functions with:
@@ -77,10 +78,23 @@ export default function DashboardPage() {
   const [storageStats, setStorageStats] = useState<any>(null)
   const [isExporting, setIsExporting] = useState(false)
 
-  // Add useEffect to load storage stats
+  // Add useEffect to load storage stats and dashboard stats
   useEffect(() => {
     loadStorageStats()
+    fetchDashboardStats()
   }, [])
+
+  const fetchDashboardStats = async () => {
+    try {
+      const response = await fetch(apiUrl("/api/stats"))
+      if (response.ok) {
+        const data = await response.json()
+        setStats(data)
+      }
+    } catch (err) {
+      console.error("Failed to fetch dashboard stats", err)
+    }
+  }
 
   const loadStorageStats = async () => {
     const stats = await exportService.getStorageStats()
@@ -181,15 +195,32 @@ export default function DashboardPage() {
     setGeneratedIp(ip)
   }
 
-  const blockIP = () => {
+  const blockIP = async () => {
     if (!ipInput || !blockReason) {
       alert("Please enter an IP address and reason for blocking")
       return
     }
 
-    alert(`IP ${ipInput} has been blocked successfully. Reason: ${blockReason}`)
-    setBlockReason("")
-    setStats((prev) => ({ ...prev, blockedIPs: prev.blockedIPs + 1 }))
+    try {
+      const response = await fetch(apiUrl("/api/blocked-ips"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ip: ipInput, reason: blockReason }),
+      })
+
+      if (response.ok) {
+        alert(`IP ${ipInput} has been blocked successfully. Reason: ${blockReason}`)
+        setBlockReason("")
+        fetchBlockedIPs()
+        setStats((prev) => ({ ...prev, blockedIPs: prev.blockedIPs + 1 }))
+      } else {
+        const errorData = await response.json()
+        alert(`Error: ${errorData.error || "Failed to block IP"}`)
+      }
+    } catch (err) {
+      console.error("Failed to block IP", err)
+      alert("Failed to block IP")
+    }
   }
 
   const copyToClipboard = (text: string) => {
@@ -197,48 +228,41 @@ export default function DashboardPage() {
     alert("Copied to clipboard!")
   }
 
-  const blockedIPs = [
-    {
-      ip: "192.168.1.100",
-      reason: "Suspicious activity",
-      date: "2024-01-15",
-      status: "Blocked",
-      location: "Unknown",
-      threat: "High",
-    },
-    {
-      ip: "10.0.0.50",
-      reason: "Malware detected",
-      date: "2024-01-14",
-      status: "Blocked",
-      location: "Russia",
-      threat: "Critical",
-    },
-    {
-      ip: "172.16.0.25",
-      reason: "Brute force attempt",
-      date: "2024-01-13",
-      status: "Blocked",
-      location: "China",
-      threat: "High",
-    },
-    {
-      ip: "203.0.113.45",
-      reason: "Spam source",
-      date: "2024-01-12",
-      status: "Blocked",
-      location: "Nigeria",
-      threat: "Medium",
-    },
-    {
-      ip: "198.51.100.30",
-      reason: "DDoS attack",
-      date: "2024-01-11",
-      status: "Blocked",
-      location: "Unknown",
-      threat: "Critical",
-    },
-  ]
+  const [blockedIPs, setBlockedIPs] = useState<any[]>([])
+
+  useEffect(() => {
+    fetchBlockedIPs()
+  }, [])
+
+  const fetchBlockedIPs = async () => {
+    try {
+      const response = await fetch(apiUrl("/api/blocked-ips"))
+      if (response.ok) {
+        const data = await response.json()
+        setBlockedIPs(data)
+      }
+    } catch (err) {
+      console.error("Failed to fetch blocked IPs", err)
+    }
+  }
+
+  const unblockIP = async (ip: string) => {
+    if (!confirm(`Are you sure you want to unblock ${ip}?`)) return
+    try {
+      const response = await fetch(apiUrl(`/api/blocked-ips/${encodeURIComponent(ip)}`), {
+        method: "DELETE",
+      })
+      if (response.ok) {
+        alert(`IP ${ip} has been unblocked.`)
+        fetchBlockedIPs()
+        setStats((prev) => ({ ...prev, blockedIPs: prev.blockedIPs - 1 }))
+      } else {
+        alert("Failed to unblock IP.")
+      }
+    } catch (err) {
+      console.error("Failed to unblock IP", err)
+    }
+  }
 
   const ipTypes = [
     {
@@ -1113,13 +1137,14 @@ export default function DashboardPage() {
                             </div>
                             <div className="text-xs text-slate-400">{ip.reason}</div>
                             <div className="text-xs text-slate-500">
-                              {ip.date} • {ip.location}
+                              {new Date(ip.date).toISOString().split('T')[0]} • {ip.location}
                             </div>
                           </div>
                           <Button
                             size="sm"
                             variant="outline"
                             className="border-slate-600 text-slate-300 hover:text-white bg-transparent"
+                            onClick={() => unblockIP(ip.ip)}
                           >
                             Unblock
                           </Button>

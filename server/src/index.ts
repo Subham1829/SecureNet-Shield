@@ -1,7 +1,15 @@
+import "dotenv/config"
 import cors from "cors"
 import express from "express"
 import { getAllowedOrigins } from "./lib/cors.js"
 import exportsRouter from "./routes/exports.js"
+import blockedIpsRouter from "./routes/blocked-ips.routes.js"
+import { statsRouter } from "./routes/stats.routes.js"
+import { blockedCheckMiddleware } from "./middlewares/blocked-check.middleware.js"
+import { globalRateLimiter } from "./middlewares/rate-limiters.middleware.js"
+import { authRoutes } from "./routes/auth.routes.js"
+import mongoose from "mongoose"
+import cookieParser from "cookie-parser"
 
 const app = express()
 const PORT = Number(process.env.PORT) || 4000
@@ -15,25 +23,48 @@ app.use(
   }),
 )
 app.use(express.json({ limit: "10mb" }))
+app.use(cookieParser())
+
+// Apply blocked IP check globally BEFORE rate limits
+app.use(blockedCheckMiddleware)
+
+// Apply global rate limiter
+app.use(globalRateLimiter)
 
 app.get("/health", (_req, res) => {
   res.json({ status: "ok", env: isProduction ? "production" : "development" })
 })
 
 app.use("/api/exports", exportsRouter)
+app.use("/api/blocked-ips", blockedIpsRouter)
+app.use("/api/stats", statsRouter)
+app.use("/api/auth", authRoutes)
 
-const server = app.listen(PORT, HOST, () => {
-  console.log(`API server running at http://${HOST}:${PORT}`)
-})
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/securenet"
 
-server.on("error", (err: NodeJS.ErrnoException) => {
-  if (err.code === "EADDRINUSE") {
-    console.error(
-      `Port ${PORT} is already in use. Stop the other process or set PORT in server/.env (e.g. PORT=4001).`,
-    )
-    console.error(`Windows: netstat -ano | findstr :${PORT}  then  taskkill /PID <pid> /F`)
-  } else {
-    console.error(err)
-  }
-  process.exit(1)
-})
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => {
+    console.log("Connected to MongoDB")
+    const server = app.listen(PORT, HOST, () => {
+      console.log(`API server running at http://${HOST}:${PORT}`)
+    })
+
+    server.on("error", (err: NodeJS.ErrnoException) => {
+      if (err.code === "EADDRINUSE") {
+        console.error(
+          `Port ${PORT} is already in use. Stop the other process or set PORT in server/.env (e.g. PORT=4001).`,
+        )
+        console.error(`Windows: netstat -ano | findstr :${PORT}  then  taskkill /PID <pid> /F`)
+      } else {
+        console.error(err)
+      }
+      process.exit(1)
+    })
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err)
+    process.exit(1)
+  })
+
+
