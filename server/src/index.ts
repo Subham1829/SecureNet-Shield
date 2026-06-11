@@ -46,25 +46,33 @@ mongoose
   .connect(MONGODB_URI)
   .then(() => {
     console.log("Connected to MongoDB")
-    const server = app.listen(PORT, HOST, () => {
-      console.log(`API server running at http://${HOST}:${PORT}`)
-    })
+    
+    // Only listen if not running in a serverless environment like Vercel
+    if (!process.env.VERCEL) {
+      const server = app.listen(PORT, HOST, () => {
+        console.log(`API server running at http://${HOST}:${PORT}`)
+      })
 
-    server.on("error", (err: NodeJS.ErrnoException) => {
-      if (err.code === "EADDRINUSE") {
-        console.error(
-          `Port ${PORT} is already in use. Stop the other process or set PORT in server/.env (e.g. PORT=4001).`,
-        )
-        console.error(`Windows: netstat -ano | findstr :${PORT}  then  taskkill /PID <pid> /F`)
-      } else {
-        console.error(err)
-      }
-      process.exit(1)
-    })
+      server.on("error", (err: NodeJS.ErrnoException) => {
+        if (err.code === "EADDRINUSE") {
+          console.error(
+            `Port ${PORT} is already in use. Stop the other process or set PORT in server/.env (e.g. PORT=4001).`,
+          )
+          console.error(`Windows: netstat -ano | findstr :${PORT}  then  taskkill /PID <pid> /F`)
+        } else {
+          console.error(err)
+        }
+        process.exit(1)
+      })
+    }
   })
   .catch((err) => {
     console.error("MongoDB connection error:", err)
-    process.exit(1)
+    if (!process.env.VERCEL) {
+      process.exit(1)
+    }
   })
+
+export default app
 
 
