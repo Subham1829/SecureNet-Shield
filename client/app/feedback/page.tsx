@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Star, Send, ArrowLeft, Shield, User } from 'lucide-react'
 
@@ -21,41 +21,57 @@ export default function FeedbackPage() {
   const [anonymous, setAnonymous] = useState(false)
   const [submitted, setSubmitted] = useState(false)
 
-  const handleSubmit = () => {
-    setSubmitted(true)
-    setTimeout(() => setSubmitted(false), 3000)
+  const [reviews, setReviews] = useState<any[]>([])
+  const [loading, setLoading] = useState(false)
+
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"
+
+  const fetchReviews = async () => {
+    try {
+      const res = await fetch(`${apiUrl}/api/feedback`)
+      if (res.ok) {
+        const data = await res.json()
+        setReviews(data)
+      }
+    } catch (error) {
+      console.error("Error fetching reviews:", error)
+    }
   }
 
-  const reviews = [
-    {
-      username: "Alex Johnson",
-      rating: 5,
-      comment: "Excellent tool for network security! The IP analysis feature is incredibly detailed and helpful.",
-      date: "2024-01-15",
-      category: "Security"
-    },
-    {
-      username: "Sarah Chen",
-      rating: 4,
-      comment: "Great for learning about different IP types. The interface is clean and intuitive.",
-      date: "2024-01-14",
-      category: "Learning"
-    },
-    {
-      username: "Mike Rodriguez",
-      rating: 5,
-      comment: "The auto-blocking feature saved our network from multiple threats. Highly recommended!",
-      date: "2024-01-13",
-      category: "Monitoring"
-    },
-    {
-      username: "Anonymous",
-      rating: 4,
-      comment: "Good tool overall, but would love to see more advanced filtering options.",
-      date: "2024-01-12",
-      category: "Other"
+  useEffect(() => {
+    fetchReviews()
+  }, [])
+
+  const handleSubmit = async () => {
+    try {
+      setLoading(true)
+      const res = await fetch(`${apiUrl}/api/feedback`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          rating,
+          comment: feedback,
+          category,
+          anonymous,
+          username: "User",
+        })
+      })
+
+      if (res.ok) {
+        setSubmitted(true)
+        setRating(0)
+        setFeedback("")
+        setCategory("")
+        setAnonymous(false)
+        fetchReviews()
+        setTimeout(() => setSubmitted(false), 3000)
+      }
+    } catch (error) {
+      console.error("Error submitting feedback:", error)
+    } finally {
+      setLoading(false)
     }
-  ]
+  }
 
   return (
     <div className="min-h-screen bg-slate-950">
@@ -166,10 +182,10 @@ export default function FeedbackPage() {
               <Button 
                 onClick={handleSubmit} 
                 className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                disabled={!rating || !feedback.trim() || !category}
+                disabled={!rating || !feedback.trim() || !category || loading}
               >
                 <Send className="mr-2 h-4 w-4" />
-                Submit Feedback
+                {loading ? "Submitting..." : "Submit Feedback"}
               </Button>
 
               {/* Success Message */}
@@ -220,7 +236,7 @@ export default function FeedbackPage() {
                           </div>
                         </div>
                       </div>
-                      <span className="text-sm text-slate-500">{review.date}</span>
+                      <span className="text-sm text-slate-500">{new Date(review.createdAt || new Date()).toLocaleDateString()}</span>
                     </div>
                     <p className="text-sm text-slate-300 pl-13">
                       {review.comment}
@@ -241,19 +257,25 @@ export default function FeedbackPage() {
           <CardContent>
             <div className="grid gap-4 md:grid-cols-4">
               <div className="text-center">
-                <div className="text-2xl font-bold text-white">4.5</div>
+                <div className="text-2xl font-bold text-white">
+                  {reviews.length > 0 ? (reviews.reduce((acc, curr) => acc + curr.rating, 0) / reviews.length).toFixed(1) : "0"}
+                </div>
                 <div className="text-sm text-slate-400">Average Rating</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-white">127</div>
+                <div className="text-2xl font-bold text-white">{reviews.length}</div>
                 <div className="text-sm text-slate-400">Total Reviews</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-white">89%</div>
+                <div className="text-2xl font-bold text-white">
+                  {reviews.length > 0 ? Math.round((reviews.filter(r => r.rating >= 4).length / reviews.length) * 100) : 0}%
+                </div>
                 <div className="text-sm text-slate-400">Positive Feedback</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-white">24</div>
+                <div className="text-2xl font-bold text-white">
+                  {reviews.filter(r => new Date(r.createdAt || new Date()).getMonth() === new Date().getMonth()).length}
+                </div>
                 <div className="text-sm text-slate-400">This Month</div>
               </div>
             </div>

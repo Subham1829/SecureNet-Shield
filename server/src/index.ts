@@ -41,12 +41,14 @@ app.get("/health", (_req, res) => {
 })
 
 import { analysisRouter } from "./routes/analysis.routes.js"
+import { feedbackRouter } from "./routes/feedback.routes.js"
 
 app.use("/api/exports", exportsRouter)
 app.use("/api/blocked-ips", blockedIpsRouter)
 app.use("/api/stats", statsRouter)
 app.use("/api/auth", authRoutes)
 app.use("/api/analyze", analysisRouter)
+app.use("/api/feedback", feedbackRouter)
 
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/securenet"
 
