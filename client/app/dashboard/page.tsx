@@ -924,52 +924,6 @@ export default function DashboardPage() {
             </Card>
           </div>
 
-          {/* Analyzed / Monitored IPs */}
-          <Card className="bg-slate-900/50 border-slate-700 mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-white">
-                <Eye className="h-5 w-5 text-blue-400" />
-                Analyzed / Monitored IPs
-              </CardTitle>
-              <CardDescription className="text-slate-400">
-                A list of all unique IP addresses that have interacted with your server
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto rounded-lg border border-slate-700">
-                <Table>
-                  <TableHeader className="bg-slate-800">
-                    <TableRow className="border-slate-700">
-                      <TableHead className="text-slate-400">IP Address</TableHead>
-                      <TableHead className="text-slate-400">Last Seen</TableHead>
-                      <TableHead className="text-slate-400">Total Requests</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {monitoredIPs.length === 0 ? (
-                      <TableRow className="border-slate-700 border-b-0">
-                        <TableCell colSpan={3} className="text-center text-slate-500 py-6">
-                          No IPs analyzed yet.
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      monitoredIPs.map((ip, index) => (
-                        <TableRow key={index} className="border-slate-700 border-b-0 hover:bg-slate-800/50">
-                          <TableCell className="font-mono text-white">{ip.ip}</TableCell>
-                          <TableCell className="text-slate-300">{new Date(ip.lastSeen).toLocaleString()}</TableCell>
-                          <TableCell>
-                            <Badge variant="secondary" className="bg-slate-700 text-slate-300">
-                              {ip.requestCount}
-                            </Badge>
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-            </CardContent>
-          </Card>
 
           {/* Main Dashboard Content */}
           <Tabs defaultValue="analysis" className="space-y-6">
@@ -989,6 +943,9 @@ export default function DashboardPage() {
 
               <TabsTrigger value="reports" className="data-[state=active]:bg-slate-700 data-[state=active]:text-white">
                 Reports
+              </TabsTrigger>
+              <TabsTrigger value="details" className="data-[state=active]:bg-slate-700 data-[state=active]:text-white">
+                Details
               </TabsTrigger>
 
             </TabsList>
@@ -2100,6 +2057,53 @@ export default function DashboardPage() {
             </TabsContent>
 
             <TabsContent value="details" className="space-y-6">
+              {/* Analyzed / Monitored IPs */}
+              <Card className="bg-slate-900/50 border-slate-700 mb-8">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-white">
+                    <Eye className="h-5 w-5 text-blue-400" />
+                    Analyzed / Monitored IPs
+                  </CardTitle>
+                  <CardDescription className="text-slate-400">
+                    A list of all unique IP addresses that have interacted with your server
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="overflow-x-auto rounded-lg border border-slate-700">
+                    <Table>
+                      <TableHeader className="bg-slate-800">
+                        <TableRow className="border-slate-700">
+                          <TableHead className="text-slate-400">IP Address</TableHead>
+                          <TableHead className="text-slate-400">Last Seen</TableHead>
+                          <TableHead className="text-slate-400">Total Requests</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {monitoredIPs.length === 0 ? (
+                          <TableRow className="border-slate-700 border-b-0">
+                            <TableCell colSpan={3} className="text-center text-slate-500 py-6">
+                              No IPs analyzed yet.
+                            </TableCell>
+                          </TableRow>
+                        ) : (
+                          monitoredIPs.map((ip, index) => (
+                            <TableRow key={index} className="border-slate-700 border-b-0 hover:bg-slate-800/50">
+                              <TableCell className="font-mono text-white">{ip.ip}</TableCell>
+                              <TableCell className="text-slate-300">{new Date(ip.lastSeen).toLocaleString()}</TableCell>
+                              <TableCell>
+                                <Badge variant="secondary" className="bg-slate-700 text-slate-300">
+                                  {ip.requestCount}
+                                </Badge>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </CardContent>
+              </Card>
+
               <div className="grid gap-6">
                 {/* IP Address Types */}
                 <Card className="bg-slate-900/50 border-slate-700">
