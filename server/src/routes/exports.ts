@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express"
 import { Export } from "../models/Export.js"
 import { authMiddleware } from "../middlewares/auth.middleware.js"
+import { readExportFile, deleteExportFile, getStorageStats as getDiskStorageStats } from "../lib/exports-store.js"
 
 const router = Router()
 
@@ -80,7 +81,15 @@ router.get("/", async (req: Request, res: Response) => {
     // Read file from MongoDB
     const file = await Export.findOne({ filename, userId: req.userId })
     if (!file || !file.data) {
-      return res.status(404).json({ error: "File not found" })
+      // Fallback to disk for older exports
+      const diskFile = await readExportFile(filename)
+      if (!diskFile) {
+        return res.status(404).json({ error: "File not found" })
+      }
+      res.setHeader("Content-Type", diskFile.contentType)
+      res.setHeader("Content-Disposition", `attachment; filename="${filename}"`)
+      res.setHeader("Content-Length", diskFile.stats.size.toString())
+      return res.send(diskFile.fileContent)
     }
 
     const cType = file.contentType || (filename.endsWith(".json") ? "application/json" : "text/csv")
@@ -106,6 +115,9 @@ router.delete("/", async (req: Request, res: Response) => {
     
     // Delete from MongoDB
     const deleted = await Export.findOneAndDelete({ filename, userId: req.userId })
+    // Also attempt disk delete
+    await deleteExportFile(filename).catch(() => {})
+
     if (!deleted) {
       return res.status(404).json({ error: "File not found" })
     }
