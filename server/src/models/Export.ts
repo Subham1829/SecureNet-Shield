@@ -8,6 +8,8 @@ export interface IExport extends Document {
   records: number
   status: string
   serverStored: boolean
+  data?: string
+  contentType?: string
   userId: mongoose.Types.ObjectId
   createdAt: Date
 }
@@ -20,8 +22,11 @@ const exportSchema = new Schema<IExport>({
   records: { type: Number, required: true },
   status: { type: String, default: "completed" },
   serverStored: { type: Boolean, default: true },
+  data: { type: String },
+  contentType: { type: String },
   userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
   createdAt: { type: Date, default: Date.now },
 })
 
 export const Export = mongoose.model<IExport>("Export", exportSchema)
+
