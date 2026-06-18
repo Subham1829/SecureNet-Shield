@@ -11,6 +11,8 @@ import { authRoutes } from "./routes/auth.routes.js"
 import mongoose from "mongoose"
 import cookieParser from "cookie-parser"
 
+import { monitorIPMiddleware } from "./middlewares/monitored-ips.middleware.js"
+
 const app = express()
 const PORT = Number(process.env.PORT) || 4000
 const HOST = process.env.HOST || "localhost"
@@ -25,6 +27,9 @@ app.use(
 app.use(express.json({ limit: "10mb" }))
 app.use(cookieParser())
 
+// Monitor all incoming IPs
+app.use(monitorIPMiddleware)
+
 // Apply blocked IP check globally BEFORE rate limits
 app.use(blockedCheckMiddleware)
 
@@ -35,10 +40,13 @@ app.get("/health", (_req, res) => {
   res.json({ status: "ok", env: isProduction ? "production" : "development" })
 })
 
+import { analysisRouter } from "./routes/analysis.routes.js"
+
 app.use("/api/exports", exportsRouter)
 app.use("/api/blocked-ips", blockedIpsRouter)
 app.use("/api/stats", statsRouter)
 app.use("/api/auth", authRoutes)
+app.use("/api/analyze", analysisRouter)
 
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/securenet"
 

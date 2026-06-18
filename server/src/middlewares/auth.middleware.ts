@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express"
 import jwt from "jsonwebtoken"
+import { BlacklistedToken } from "../models/BlacklistedToken.js"
 
 const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret_do_not_use_in_prod"
 
@@ -12,7 +13,7 @@ declare global {
   }
 }
 
-export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Check Authorization header for Bearer token
     const authHeader = req.headers.authorization
@@ -25,6 +26,12 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
 
     if (!token) {
       return res.status(401).json({ error: "Authentication required. Token is missing." })
+    }
+
+    // Check if token is blacklisted
+    const isBlacklisted = await BlacklistedToken.exists({ token })
+    if (isBlacklisted) {
+      return res.status(401).json({ error: "Authentication required. Token has been revoked. Please log in again." })
     }
 
     // Verify token

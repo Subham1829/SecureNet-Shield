@@ -1,35 +1,70 @@
-import { Router } from "express"
+import { Router, Request, Response } from "express"
 import {
   deleteExportFile,
   getStorageStats,
-  listExportFiles,
   readExportFile,
   saveExportFile,
 } from "../lib/exports-store.js"
+import { Export } from "../models/Export.js"
+import { authMiddleware } from "../middlewares/auth.middleware.js"
 
 const router = Router()
 
-router.post("/", async (req, res) => {
+// Apply auth middleware to all export routes
+router.use(authMiddleware)
+
+router.post("/", async (req: Request, res: Response) => {
   try {
-    const { filename, data, contentType } = req.body
+    const { filename, data, contentType, type, format, records } = req.body
     if (!filename || data === undefined) {
       return res.status(400).json({ error: "Missing filename or data" })
     }
     const result = await saveExportFile(filename, data, contentType)
-    return res.json(result)
+    
+    // Save metadata to MongoDB
+    const exportDoc = new Export({
+      filename: result.filename,
+      type: type || "Unknown",
+      format: format || "UNKNOWN",
+      size: result.size,
+      records: records || 0,
+      serverStored: true,
+      userId: req.userId,
+    })
+    await exportDoc.save()
+    
+    return res.json({
+      ...result,
+      id: exportDoc._id,
+      exportDate: exportDoc.createdAt,
+    })
   } catch (error) {
     console.error("Error saving export file:", error)
     return res.status(500).json({ error: "Failed to save file" })
   }
 })
 
-router.get("/", async (req, res) => {
+router.get("/", async (req: Request, res: Response) => {
   try {
     const filename = req.query.filename as string | undefined
     const action = req.query.action as string | undefined
 
     if (action === "list") {
-      const files = await listExportFiles()
+      // Fetch from MongoDB instead of filesystem
+      const exports = await Export.find({ userId: req.userId }).sort({ createdAt: -1 })
+      
+      // Map it to match what the frontend expects
+      const files = exports.map(exp => ({
+        id: exp._id,
+        filename: exp.filename,
+        type: exp.type,
+        format: exp.format,
+        size: exp.size,
+        records: exp.records,
+        exportDate: exp.createdAt,
+        status: exp.status,
+        serverStored: exp.serverStored
+      }))
       return res.json({ files })
     }
 
@@ -37,6 +72,7 @@ router.get("/", async (req, res) => {
       return res.status(400).json({ error: "Missing filename" })
     }
 
+    // Still read physical file from disk when downloading
     const file = await readExportFile(filename)
     if (!file) {
       return res.status(404).json({ error: "File not found" })
@@ -52,15 +88,20 @@ router.get("/", async (req, res) => {
   }
 })
 
-router.delete("/", async (req, res) => {
+router.delete("/", async (req: Request, res: Response) => {
   try {
     const filename = req.query.filename as string | undefined
     if (!filename) {
       return res.status(400).json({ error: "Missing filename" })
     }
+    
+    // Delete from MongoDB
+    await Export.findOneAndDelete({ filename, userId: req.userId })
+    
+    // Delete physical file
     const deleted = await deleteExportFile(filename)
     if (!deleted) {
-      return res.status(404).json({ error: "File not found" })
+      return res.status(404).json({ error: "File not found on disk" })
     }
     return res.json({ success: true, message: "File deleted successfully" })
   } catch (error) {
@@ -71,7 +112,7 @@ router.delete("/", async (req, res) => {
 
 const bulkRouter = Router()
 
-bulkRouter.delete("/", async (req, res) => {
+bulkRouter.delete("/", async (req: Request, res: Response) => {
   try {
     const { filenames } = req.body
     if (!filenames || !Array.isArray(filenames)) {
@@ -81,11 +122,12 @@ bulkRouter.delete("/", async (req, res) => {
     const results = []
     for (const filename of filenames) {
       try {
+        await Export.findOneAndDelete({ filename, userId: req.userId })
         const success = await deleteExportFile(filename)
         results.push({
           filename,
           success,
-          ...(success ? {} : { error: "File not found" }),
+          ...(success ? {} : { error: "File not found on disk" }),
         })
       } catch {
         results.push({ filename, success: false, error: "Failed to delete" })
@@ -108,7 +150,7 @@ bulkRouter.delete("/", async (req, res) => {
   }
 })
 
-bulkRouter.get("/", async (_req, res) => {
+bulkRouter.get("/", async (_req: Request, res: Response) => {
   try {
     const stats = await getStorageStats()
     return res.json(stats)
