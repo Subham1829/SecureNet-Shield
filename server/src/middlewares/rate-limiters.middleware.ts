@@ -14,13 +14,13 @@ const autoBlockIP = async (ip: string, reason: string) => {
   }
 }
 
-// 1. Global Rate Limiter: Max 100 requests per 1 minute
+// 1. Global Rate Limiter: Max 20 requests per 1 second
 export const globalRateLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
-  max: 100, // Limit each IP to 100 requests per `window`
+  windowMs: 1000, // 1 second
+  max: 20, // Limit each IP to 20 requests per `window`
   handler: async (req, res) => {
     const ip = req.ip || req.socket.remoteAddress || "0.0.0.0"
-    await autoBlockIP(ip, "Excessive requests (>100/min)")
+    await autoBlockIP(ip, "Excessive requests (>20/sec)")
     res.status(429).json({
       error: "Too Many Requests",
       message: "You have been blocked due to excessive requests.",
