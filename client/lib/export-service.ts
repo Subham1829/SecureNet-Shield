@@ -1,7 +1,7 @@
 import { apiUrl } from "./api"
 
 export interface ExportFile {
-  id: number
+  id: string
   filename: string
   type: string
   format: string
@@ -14,17 +14,8 @@ export interface ExportFile {
 
 export class ExportService {
   private static instance: ExportService
-  private exportHistory: ExportFile[] = []
 
-  private constructor() {
-    // Load export history from localStorage on initialization
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("exportHistory")
-      if (saved) {
-        this.exportHistory = JSON.parse(saved)
-      }
-    }
-  }
+  private constructor() {}
 
   static getInstance(): ExportService {
     if (!ExportService.instance) {
@@ -33,9 +24,27 @@ export class ExportService {
     return ExportService.instance
   }
 
-  private saveToLocalStorage() {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("exportHistory", JSON.stringify(this.exportHistory))
+  private getAuthHeaders() {
+    const token = typeof window !== 'undefined' ? localStorage.getItem("token") : null
+    return {
+      "Content-Type": "application/json",
+      ...(token ? { "Authorization": `Bearer ${token}` } : {})
+    }
+  }
+
+  async getExportHistory(): Promise<ExportFile[]> {
+    try {
+      const response = await fetch(apiUrl("/api/exports?action=list"), {
+        headers: this.getAuthHeaders()
+      })
+      if (!response.ok) {
+        throw new Error("Failed to fetch export history")
+      }
+      const data = await response.json()
+      return data.files || []
+    } catch (error) {
+      console.error("Error fetching export history:", error)
+      return []
     }
   }
 
@@ -52,16 +61,17 @@ export class ExportService {
         contentType = "application/json"
       }
 
-      // Save file to server
+      // Save file and metadata to server
       const response = await fetch(apiUrl("/api/exports"), {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: this.getAuthHeaders(),
         body: JSON.stringify({
           filename: `${filename}.${format.toLowerCase()}`,
           data: fileContent,
           contentType,
+          type,
+          format: format.toUpperCase(),
+          records: data.length
         }),
       })
 
@@ -71,22 +81,17 @@ export class ExportService {
 
       const result = await response.json()
 
-      // Create export record
       const exportFile: ExportFile = {
-        id: Date.now(),
+        id: result.id,
         filename: result.filename,
         type,
         format: format.toUpperCase(),
         size: result.size,
         records: data.length,
-        exportDate: new Date().toISOString(),
+        exportDate: result.exportDate || new Date().toISOString(),
         status: "completed",
         serverStored: true,
       }
-
-      // Add to history
-      this.exportHistory.unshift(exportFile)
-      this.saveToLocalStorage()
 
       // Trigger download
       await this.downloadFile(exportFile.filename)
@@ -94,23 +99,6 @@ export class ExportService {
       return exportFile
     } catch (error) {
       console.error("Error saving export file:", error)
-
-      // Create failed export record
-      const exportFile: ExportFile = {
-        id: Date.now(),
-        filename: `${filename}.${format.toLowerCase()}`,
-        type,
-        format: format.toUpperCase(),
-        size: "0 KB",
-        records: data.length,
-        exportDate: new Date().toISOString(),
-        status: "failed",
-        serverStored: false,
-      }
-
-      this.exportHistory.unshift(exportFile)
-      this.saveToLocalStorage()
-
       throw error
     }
   }
@@ -139,7 +127,9 @@ export class ExportService {
 
   async downloadFile(filename: string): Promise<void> {
     try {
-      const response = await fetch(apiUrl(`/api/exports?filename=${encodeURIComponent(filename)}`))
+      const response = await fetch(apiUrl(`/api/exports?filename=${encodeURIComponent(filename)}`), {
+        headers: this.getAuthHeaders() // We don't send auth token in fetch if we are making it download directly via DOM link usually, but for fetch blob we do.
+      })
 
       if (!response.ok) {
         throw new Error("Failed to download file")
@@ -161,139 +151,73 @@ export class ExportService {
     }
   }
 
-  async deleteExportFile(id: number): Promise<void> {
-    const exportFile = this.exportHistory.find((exp) => exp.id === id)
-    if (!exportFile) {
-      throw new Error("Export file not found")
-    }
-
+  async deleteExportFile(filename: string): Promise<void> {
     try {
-      if (exportFile.serverStored) {
-        const response = await fetch(apiUrl(`/api/exports?filename=${encodeURIComponent(exportFile.filename)}`), {
-          method: "DELETE",
-        })
+      const response = await fetch(apiUrl(`/api/exports?filename=${encodeURIComponent(filename)}`), {
+        method: "DELETE",
+        headers: this.getAuthHeaders()
+      })
 
-        if (!response.ok) {
-          throw new Error("Failed to delete file from server")
-        }
+      if (!response.ok) {
+        throw new Error("Failed to delete file from server")
       }
-
-      // Remove from history
-      this.exportHistory = this.exportHistory.filter((exp) => exp.id !== id)
-      this.saveToLocalStorage()
     } catch (error) {
       console.error("Error deleting export file:", error)
       throw error
     }
   }
 
-  async deleteMultipleExports(ids: number[]): Promise<void> {
-    const filesToDelete = this.exportHistory
-      .filter((exp) => ids.includes(exp.id) && exp.serverStored)
-      .map((exp) => exp.filename)
-
+  async deleteMultipleExports(filenames: string[]): Promise<void> {
     try {
-      if (filesToDelete.length > 0) {
+      if (filenames.length > 0) {
         const response = await fetch(apiUrl("/api/exports/bulk"), {
           method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ filenames: filesToDelete }),
+          headers: this.getAuthHeaders(),
+          body: JSON.stringify({ filenames }),
         })
 
         if (!response.ok) {
           throw new Error("Failed to delete files from server")
         }
       }
-
-      // Remove from history
-      this.exportHistory = this.exportHistory.filter((exp) => !ids.includes(exp.id))
-      this.saveToLocalStorage()
     } catch (error) {
       console.error("Error deleting multiple export files:", error)
       throw error
     }
   }
 
-  async clearAllExports(): Promise<void> {
-    const serverStoredFiles = this.exportHistory.filter((exp) => exp.serverStored).map((exp) => exp.filename)
-
-    try {
-      if (serverStoredFiles.length > 0) {
-        const response = await fetch(apiUrl("/api/exports/bulk"), {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ filenames: serverStoredFiles }),
-        })
-
-        if (!response.ok) {
-          throw new Error("Failed to delete files from server")
-        }
-      }
-
-      // Clear history
-      this.exportHistory = []
-      this.saveToLocalStorage()
-    } catch (error) {
-      console.error("Error clearing all export files:", error)
-      throw error
-    }
+  async clearAllExports(filenames: string[]): Promise<void> {
+    return this.deleteMultipleExports(filenames)
   }
 
   async getStorageStats(): Promise<any> {
     try {
-      const response = await fetch(apiUrl("/api/exports/bulk"))
+      const response = await fetch(apiUrl("/api/exports/bulk"), {
+        headers: this.getAuthHeaders()
+      })
       if (!response.ok) {
         console.warn("Failed to get storage stats, using defaults")
-        return {
-          storage: {
-            totalFiles: 0,
-            totalSize: "0 KB",
-            totalSizeBytes: 0,
-            fileTypes: {
-              csv: 0,
-              json: 0,
-              other: 0,
-            },
-          },
-        }
+        return this.getEmptyStorageStats()
       }
       return await response.json()
     } catch (error) {
       console.error("Error getting storage stats:", error)
-      return {
-        storage: {
-          totalFiles: 0,
-          totalSize: "0 KB",
-          totalSizeBytes: 0,
-          fileTypes: {
-            csv: 0,
-            json: 0,
-            other: 0,
-          },
-        },
-      }
+      return this.getEmptyStorageStats()
     }
   }
 
-  getExportHistory(): ExportFile[] {
-    return [...this.exportHistory]
-  }
-
-  getExportById(id: number): ExportFile | undefined {
-    return this.exportHistory.find((exp) => exp.id === id)
-  }
-
-  getFilteredExports(searchTerm = "", typeFilter = ""): ExportFile[] {
-    return this.exportHistory.filter((exp) => {
-      const matchesSearch =
-        exp.filename.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        exp.type.toLowerCase().includes(searchTerm.toLowerCase())
-      const matchesType = !typeFilter || exp.type === typeFilter
-      return matchesSearch && matchesType
-    })
+  private getEmptyStorageStats() {
+    return {
+      storage: {
+        totalFiles: 0,
+        totalSize: "0 KB",
+        totalSizeBytes: 0,
+        fileTypes: {
+          csv: 0,
+          json: 0,
+          other: 0,
+        },
+      },
+    }
   }
 }

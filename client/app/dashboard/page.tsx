@@ -71,16 +71,30 @@ export default function DashboardPage() {
 
   // Replace the export history state and functions with:
   const exportService = ExportService.getInstance()
-  const [exportHistory, setExportHistory] = useState(exportService.getExportHistory())
-  const [selectedExports, setSelectedExports] = useState<number[]>([])
+  const [exportHistory, setExportHistory] = useState<any[]>([])
+  const [selectedExports, setSelectedExports] = useState<string[]>([])
   const [exportFilter, setExportFilter] = useState("")
   const [exportTypeFilter, setExportTypeFilter] = useState("all")
   const [storageStats, setStorageStats] = useState<any>(null)
   const [isExporting, setIsExporting] = useState(false)
 
-  const handleLogout = () => {
-    localStorage.removeItem("token")
-    window.location.href = "/login"
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem("token")
+      if (token) {
+        await fetch(apiUrl("/api/auth/logout"), {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        })
+      }
+    } catch (e) {
+      console.error("Logout error", e)
+    } finally {
+      localStorage.removeItem("token")
+      window.location.href = "/login"
+    }
   }
 
   // Add useEffect to load storage stats and dashboard stats
@@ -92,6 +106,7 @@ export default function DashboardPage() {
     }
     loadStorageStats()
     fetchDashboardStats()
+    refreshExportHistory()
   }, [])
 
   const fetchDashboardStats = async () => {
@@ -119,8 +134,9 @@ export default function DashboardPage() {
     setStorageStats(stats)
   }
 
-  const refreshExportHistory = () => {
-    setExportHistory(exportService.getExportHistory())
+  const refreshExportHistory = async () => {
+    const history = await exportService.getExportHistory()
+    setExportHistory(history)
     loadStorageStats()
   }
 
@@ -138,43 +154,30 @@ export default function DashboardPage() {
 
     setIsAnalyzing(true)
 
-    // Simulate API call delay
-    setTimeout(() => {
-      const analysis = {
-        ip: ipInput,
-        type: ipInput.includes(":") ? "IPv6" : "IPv4",
-        status: Math.random() > 0.3 ? "Valid" : "Invalid",
-        category: getIPCategory(ipInput),
-        location: {
-          country: "United States",
-          region: "California",
-          city: "San Francisco",
-          latitude: 37.7749,
-          longitude: -122.4194,
-          timezone: "America/Los_Angeles",
-          isp: "Cloudflare Inc.",
-          organization: "Cloudflare",
-          postal: "94102",
-        },
-        security: {
-          threat: Math.random() > 0.8 ? "Suspicious" : "Clean",
-          blacklisted: Math.random() > 0.9,
-          proxy: Math.random() > 0.85,
-          vpn: Math.random() > 0.8,
-          tor: Math.random() > 0.95,
-          reputation: Math.floor(Math.random() * 100),
-        },
-        network: {
-          asn: "AS13335",
-          domain: "cloudflare.com",
-          usage: "hosting",
-        },
+    try {
+      const token = localStorage.getItem("token")
+      const response = await fetch(apiUrl(`/api/analyze/${ipInput}`), {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
+      
+      if (!response.ok) {
+        const errorData = await response.json()
+        alert(`Error analyzing IP: ${errorData.error || response.statusText}`)
+        setIsAnalyzing(false)
+        return
       }
 
+      const analysis = await response.json()
       setIpAnalysis(analysis)
       setIpLocation(analysis.location)
+    } catch (err) {
+      console.error("Failed to analyze IP", err)
+      alert("Failed to analyze IP. Please try again.")
+    } finally {
       setIsAnalyzing(false)
-    }, 2000)
+    }
   }
 
   const getIPCategory = (ip: string) => {
@@ -254,10 +257,29 @@ export default function DashboardPage() {
   }
 
   const [blockedIPs, setBlockedIPs] = useState<any[]>([])
+  const [monitoredIPs, setMonitoredIPs] = useState<any[]>([])
 
   useEffect(() => {
     fetchBlockedIPs()
+    fetchMonitoredIPs()
   }, [])
+
+  const fetchMonitoredIPs = async () => {
+    try {
+      const token = localStorage.getItem("token")
+      const response = await fetch(apiUrl("/api/stats/monitored-ips"), {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
+      if (response.ok) {
+        const data = await response.json()
+        setMonitoredIPs(data)
+      }
+    } catch (err) {
+      console.error("Failed to fetch monitored IPs", err)
+    }
+  }
 
   const fetchBlockedIPs = async () => {
     try {
@@ -687,11 +709,11 @@ export default function DashboardPage() {
   }
 
   // Updated export history management functions
-  const deleteExportHistory = async (id: number) => {
+  const deleteExportHistory = async (filename: string) => {
     try {
-      await exportService.deleteExportFile(id)
+      await exportService.deleteExportFile(filename)
       refreshExportHistory()
-      setSelectedExports((prev) => prev.filter((selectedId) => selectedId !== id))
+      setSelectedExports((prev) => prev.filter((f) => f !== filename))
       alert("Export file deleted successfully!")
     } catch (error) {
       console.error("Delete failed:", error)
@@ -719,7 +741,8 @@ export default function DashboardPage() {
     }
 
     try {
-      await exportService.clearAllExports()
+      const allFilenames = exportHistory.map(e => e.filename)
+      await exportService.clearAllExports(allFilenames)
       refreshExportHistory()
       setSelectedExports([])
       alert("All export files deleted successfully!")
@@ -739,7 +762,13 @@ export default function DashboardPage() {
   }
 
   const getFilteredExports = () => {
-    return exportService.getFilteredExports(exportFilter, exportTypeFilter === "all" ? "" : exportTypeFilter)
+    return exportHistory.filter((exp) => {
+      const matchesSearch =
+        exp.filename.toLowerCase().includes(exportFilter.toLowerCase()) ||
+        exp.type.toLowerCase().includes(exportFilter.toLowerCase())
+      const matchesType = exportTypeFilter === "all" || exp.type === exportTypeFilter
+      return matchesSearch && matchesType
+    })
   }
 
   const formatFileSize = (size: string) => size
@@ -750,16 +779,16 @@ export default function DashboardPage() {
 
   const selectAllExports = () => {
     const filteredExports = getFilteredExports()
-    const allIds = filteredExports.map((exp) => exp.id)
-    setSelectedExports(allIds)
+    const allFilenames = filteredExports.map((exp) => exp.filename)
+    setSelectedExports(allFilenames)
   }
 
-  const toggleExportSelection = (exportId: number) => {
+  const toggleExportSelection = (filename: string) => {
     setSelectedExports((prev) => {
-      if (prev.includes(exportId)) {
-        return prev.filter((id) => id !== exportId)
+      if (prev.includes(filename)) {
+        return prev.filter((f) => f !== filename)
       } else {
-        return [...prev, exportId]
+        return [...prev, filename]
       }
     })
   }
@@ -895,6 +924,53 @@ export default function DashboardPage() {
             </Card>
           </div>
 
+          {/* Analyzed / Monitored IPs */}
+          <Card className="bg-slate-900/50 border-slate-700 mb-8">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-white">
+                <Eye className="h-5 w-5 text-blue-400" />
+                Analyzed / Monitored IPs
+              </CardTitle>
+              <CardDescription className="text-slate-400">
+                A list of all unique IP addresses that have interacted with your server
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto rounded-lg border border-slate-700">
+                <Table>
+                  <TableHeader className="bg-slate-800">
+                    <TableRow className="border-slate-700">
+                      <TableHead className="text-slate-400">IP Address</TableHead>
+                      <TableHead className="text-slate-400">Last Seen</TableHead>
+                      <TableHead className="text-slate-400">Total Requests</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {monitoredIPs.length === 0 ? (
+                      <TableRow className="border-slate-700 border-b-0">
+                        <TableCell colSpan={3} className="text-center text-slate-500 py-6">
+                          No IPs analyzed yet.
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      monitoredIPs.map((ip, index) => (
+                        <TableRow key={index} className="border-slate-700 border-b-0 hover:bg-slate-800/50">
+                          <TableCell className="font-mono text-white">{ip.ip}</TableCell>
+                          <TableCell className="text-slate-300">{new Date(ip.lastSeen).toLocaleString()}</TableCell>
+                          <TableCell>
+                            <Badge variant="secondary" className="bg-slate-700 text-slate-300">
+                              {ip.requestCount}
+                            </Badge>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Main Dashboard Content */}
           <Tabs defaultValue="analysis" className="space-y-6">
             <TabsList className="bg-slate-800 border-slate-700 text-slate-400">
@@ -910,15 +986,11 @@ export default function DashboardPage() {
               >
                 Generate
               </TabsTrigger>
-              <TabsTrigger value="location" className="data-[state=active]:bg-slate-700 data-[state=active]:text-white">
-                Location
-              </TabsTrigger>
+
               <TabsTrigger value="reports" className="data-[state=active]:bg-slate-700 data-[state=active]:text-white">
                 Reports
               </TabsTrigger>
-              <TabsTrigger value="details" className="data-[state=active]:bg-slate-700 data-[state=active]:text-white">
-                Details
-              </TabsTrigger>
+
             </TabsList>
 
             {/* 1. IP Analysis Tab */}
@@ -1275,86 +1347,7 @@ export default function DashboardPage() {
               </Card>
             </TabsContent>
 
-            {/* 5. Location Tab */}
-            <TabsContent value="location" className="space-y-6">
-              <Card className="bg-slate-900/50 border-slate-700">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-white">
-                    <MapPin className="h-5 w-5 text-green-400" />
-                    IP Geolocation Lookup
-                  </CardTitle>
-                  <CardDescription className="text-slate-400">
-                    Find the geographical location and ISP information of any IP address
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {ipLocation ? (
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <Card className="bg-slate-800/50 border-slate-600">
-                        <CardHeader>
-                          <CardTitle className="text-lg text-white">Location Details</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium text-slate-300">Country:</span>
-                            <span className="text-white">{ipLocation.country}</span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium text-slate-300">Region:</span>
-                            <span className="text-white">{ipLocation.region}</span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium text-slate-300">City:</span>
-                            <span className="text-white">{ipLocation.city}</span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium text-slate-300">Postal Code:</span>
-                            <span className="text-white">{ipLocation.postal}</span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium text-slate-300">Coordinates:</span>
-                            <span className="font-mono text-white">
-                              {ipLocation.latitude}, {ipLocation.longitude}
-                            </span>
-                          </div>
-                        </CardContent>
-                      </Card>
 
-                      <Card className="bg-slate-800/50 border-slate-600">
-                        <CardHeader>
-                          <CardTitle className="text-lg text-white">Network Information</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium text-slate-300">ISP:</span>
-                            <span className="text-white">{ipLocation.isp}</span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium text-slate-300">Organization:</span>
-                            <span className="text-white">{ipLocation.organization}</span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium text-slate-300">Timezone:</span>
-                            <span className="flex items-center gap-1 text-white">
-                              <Clock className="h-4 w-4 text-blue-400" />
-                              {ipLocation.timezone}
-                            </span>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  ) : (
-                    <div className="text-center py-12">
-                      <MapPin className="h-16 w-16 mx-auto text-slate-600 mb-4" />
-                      <p className="text-slate-400 text-lg">
-                        Analyze an IP address first to see its location information
-                      </p>
-                      <p className="text-slate-500 text-sm mt-2">Use the IP Analysis tab to get started</p>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </TabsContent>
 
             {/* 8. Backend Languages Tab */}
             <TabsContent value="backend" className="space-y-6">
@@ -1997,12 +1990,12 @@ export default function DashboardPage() {
                               </TableRow>
                             ) : (
                               getFilteredExports().map((exp) => (
-                                <TableRow key={exp.id} className="border-slate-600 hover:bg-slate-800/30">
+                                <TableRow key={exp.filename} className="border-slate-600 hover:bg-slate-800/30">
                                   <TableCell>
                                     <input
                                       type="checkbox"
-                                      checked={selectedExports.includes(exp.id)}
-                                      onChange={() => toggleExportSelection(exp.id)}
+                                      checked={selectedExports.includes(exp.filename)}
+                                      onChange={() => toggleExportSelection(exp.filename)}
                                       className="rounded border-slate-600 bg-slate-800"
                                     />
                                   </TableCell>
@@ -2059,7 +2052,7 @@ export default function DashboardPage() {
                                       <Button
                                         size="sm"
                                         variant="ghost"
-                                        onClick={() => deleteExportHistory(exp.id)}
+                                        onClick={() => deleteExportHistory(exp.filename)}
                                         className="text-red-400 hover:text-red-300"
                                       >
                                         <AlertTriangle className="h-4 w-4" />
@@ -2368,6 +2361,8 @@ export default function DashboardPage() {
                 </Card>
               </div>
             </TabsContent>
+
+
           </Tabs>
         </div>
       </div>
