@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { User } from "../models/User.js"
+import { BlacklistedToken } from "../models/BlacklistedToken.js"
 
 const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret_do_not_use_in_prod"
 
@@ -74,5 +75,30 @@ export const loginUser = async (req: Request, res: Response) => {
 }
 
 export const logoutUser = async (req: Request, res: Response) => {
-  return res.json({ success: true, message: "Logged out successfully" })
+  try {
+    const authHeader = req.headers.authorization
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ error: "Missing authorization header" })
+    }
+
+    const token = authHeader.split(" ")[1]
+    
+    // Decode token to find exact expiration time
+    let expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // Default 7 days
+    try {
+      const decoded = jwt.decode(token) as { exp?: number }
+      if (decoded && decoded.exp) {
+        expiresAt = new Date(decoded.exp * 1000)
+      }
+    } catch (e) {
+      console.warn("Failed to decode token for expiration", e)
+    }
+
+    await BlacklistedToken.create({ token, expiresAt })
+
+    return res.json({ success: true, message: "Logged out successfully" })
+  } catch (error) {
+    console.error("Logout error:", error)
+    return res.status(500).json({ error: "Failed to log out" })
+  }
 }
