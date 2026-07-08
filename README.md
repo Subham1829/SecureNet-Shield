@@ -1,76 +1,30 @@
-# SecureNet Shield (IP Guardian)
+# Duplicate of Modern login interface
 
-Monorepo: **Next.js** frontend in `client/`, **Express** API in `server/`.
+*Automatically synced with your [v0.app](https://v0.app) deployments*
 
-## Project structure
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/subhamkumarpatra29-5210s-projects/v0-duplicate-of-modern-login-interface)
+[![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)](https://v0.app/chat/27ZuqNdMHZB)
 
-```
-├── client/          # Next.js frontend
-├── server/          # Express API + export file storage
-├── package.json     # Run both apps from the root
-└── README.md
-```
+## Overview
 
-## Quick start
-
-```bash
-npm install
-npm run install:all
-npm run dev
-```
-
-| Service  | URL                     |
-|----------|-------------------------|
-| Frontend | http://localhost:3000 |
-| API      | http://localhost:4000 |
-
-## Scripts (root)
-
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start client + server |
-| `npm run dev:client` | Next.js only |
-| `npm run dev:server` | API only |
-| `npm run build` | Build client |
-| `npm run build:server` | Build server |
-| `npm run install:all` | Install client & server deps |
-
-## Environment variables
-
-**Client** — copy `client/.env.example` to `client/.env.local`:
-
-- `API_URL` — backend URL for Next.js rewrites (default `http://localhost:4000`)
-
-**Server** — copy `server/.env.example` to `server/.env`:
-
-- `PORT` — default `4000`
-- `CLIENT_URL` — CORS origin (your frontend URL in production)
-- `ALLOWED_ORIGINS` — optional comma-separated extra origins
+This repository will stay in sync with your deployed chats on [v0.app](https://v0.app).
+Any changes you make to your deployed app will be automatically pushed to this repository from [v0.app](https://v0.app).
 
 ## Deployment
 
-### Frontend (Vercel)
+Your project is live at:
 
-1. Import repo on [Vercel](https://vercel.com).
-2. Set **Root Directory** to `client`.
-3. Add environment variable: `API_URL` = your deployed API URL (e.g. `https://securenet-api.onrender.com`).
+**[https://vercel.com/subhamkumarpatra29-5210s-projects/v0-duplicate-of-modern-login-interface](https://vercel.com/subhamkumarpatra29-5210s-projects/v0-duplicate-of-modern-login-interface)**
 
-### Backend
+## Build your app
 
-1. Deploy the API from the `server` folder on your chosen host.
-2. Set `CLIENT_URL` to your frontend URL in production.
-3. Optional: `ALLOWED_ORIGINS` for preview deployments.
+Continue building your app on:
 
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for step-by-step details.
+**[https://v0.app/chat/27ZuqNdMHZB](https://v0.app/chat/27ZuqNdMHZB)**
 
-## API routes
+## How It Works
 
-- `GET /health` — health check
-- `POST /api/exports` — save export file
-- `GET /api/exports?filename=` — download file
-- `GET /api/exports?action=list` — list files
-- `DELETE /api/exports?filename=` — delete file
-- `GET /api/exports/bulk` — storage stats
-- `DELETE /api/exports/bulk` — bulk delete
-
-Export files are stored in `server/exports/`.
+1. Create and modify your project using [v0.app](https://v0.app)
+2. Deploy your chats from the v0 interface
+3. Changes are automatically pushed to this repository
+4. Vercel deploys the latest version from this repository
