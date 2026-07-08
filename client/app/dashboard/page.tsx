@@ -230,7 +230,7 @@ export default function DashboardPage() {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}` 
         },
-        body: JSON.stringify({ ip: ipInput, reason: blockReason }),
+        body: JSON.stringify({ ip: ipInput.trim(), reason: blockReason.trim() }),
       })
 
       if (response.ok) {
@@ -1128,7 +1128,6 @@ export default function DashboardPage() {
                       <Button
                         onClick={blockIP}
                         className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800"
-                        disabled={!ipInput || !blockReason}
                       >
                         <Ban className="mr-2 h-4 w-4" />
                         Block IP Address

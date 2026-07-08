@@ -65,13 +65,19 @@ export default function LoginPage() {
       if (!response.ok) {
         setErrors({ form: data.error || data.message || "Login failed" })
       } else {
-        if (data.token) {
+        if (data.requiresOTP) {
+          setSuccess("Credentials verified. Redirecting to OTP verification...")
+          sessionStorage.setItem("verifyEmail", loginData.email)
+          setTimeout(() => {
+            window.location.href = `/verify-otp?email=${encodeURIComponent(loginData.email)}`
+          }, 1000)
+        } else if (data.token) {
           localStorage.setItem("token", data.token)
+          setSuccess("Authentication successful! Redirecting to dashboard...")
+          setTimeout(() => {
+            window.location.href = "/dashboard"
+          }, 1500)
         }
-        setSuccess("Authentication successful! Redirecting to dashboard...")
-        setTimeout(() => {
-          window.location.href = "/dashboard"
-        }, 1500)
       }
     } catch (err) {
       setErrors({ form: "An unexpected error occurred" })

@@ -74,22 +74,22 @@ export default function FeedbackPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-background selection:bg-primary selection:text-background font-sans">
       {/* Header */}
-      <header className="border-b border-slate-700 bg-slate-900/50 backdrop-blur-sm px-4 py-4">
+      <header className="border-b border-border bg-background px-6 py-3">
         <div className="mx-auto max-w-6xl">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" asChild className="text-slate-400 hover:text-white">
+            <Button variant="ghost" size="sm" asChild className="text-muted-foreground font-mono hover:text-foreground rounded-none bg-transparent">
               <Link href="/dashboard">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Dashboard
               </Link>
             </Button>
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-600">
-                <Shield className="h-4 w-4 text-white" />
+              <div className="flex h-8 w-8 items-center justify-center rounded-none bg-[#0d1117] text-primary">
+                <Shield className="h-4 w-4 text-primary" />
               </div>
-              <h1 className="text-2xl font-bold text-white">Feedback & Reviews</h1>
+              <h1 className="text-lg font-mono font-bold uppercase tracking-widest text-foreground font-mono">Feedback & Reviews</h1>
             </div>
           </div>
         </div>
@@ -98,17 +98,17 @@ export default function FeedbackPage() {
       <main className="mx-auto max-w-6xl p-6">
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Feedback Form */}
-          <Card className="bg-slate-900/50 border-slate-700">
-            <CardHeader>
-              <CardTitle className="text-white">Share Your Feedback</CardTitle>
-              <CardDescription className="text-slate-400">
+          <div className="noc-panel p-6 mb-6">
+            <div className="mb-4 border-b border-border pb-4">
+              <h3 className="text-sm font-mono text-primary uppercase flex items-center gap-2 mb-1">Share Your Feedback</h3>
+              <p className="text-xs font-mono text-muted-foreground">
                 Help us improve by sharing your experience with our IP blocking application
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
+              </p>
+            </div>
+            <div className="space-y-6">
               {/* Star Rating */}
               <div className="space-y-2">
-                <Label className="text-slate-300">Rate your experience</Label>
+                <Label className="text-muted-foreground font-mono text-xs">Rate your experience</Label>
                 <div className="flex gap-1">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
@@ -121,7 +121,7 @@ export default function FeedbackPage() {
                       <Star
                         className={`h-8 w-8 ${
                           star <= (hoveredRating || rating)
-                            ? "fill-yellow-400 text-yellow-400"
+                            ? "fill-primary text-primary"
                             : "text-slate-600"
                         }`}
                       />
@@ -129,7 +129,7 @@ export default function FeedbackPage() {
                   ))}
                 </div>
                 {rating > 0 && (
-                  <p className="text-sm text-slate-400">
+                  <p className="text-sm text-muted-foreground font-mono text-xs">
                     {rating === 1 && "Poor"}
                     {rating === 2 && "Fair"}
                     {rating === 3 && "Good"}
@@ -141,12 +141,12 @@ export default function FeedbackPage() {
 
               {/* Category Selection */}
               <div className="space-y-2">
-                <Label className="text-slate-300">What did you use this app for?</Label>
+                <Label className="text-muted-foreground font-mono text-xs">What did you use this app for?</Label>
                 <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger className="bg-slate-800 border-slate-600 text-white">
+                  <SelectTrigger className="noc-input border-border rounded-none focus-visible:ring-0 text-foreground font-mono">
                     <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
-                  <SelectContent className="bg-slate-800 border-slate-600">
+                  <SelectContent className="noc-input border-border rounded-none focus-visible:ring-0">
                     <SelectItem value="learning">Learning</SelectItem>
                     <SelectItem value="monitoring">Monitoring</SelectItem>
                     <SelectItem value="security">Security</SelectItem>
@@ -157,11 +157,11 @@ export default function FeedbackPage() {
 
               {/* Feedback Text */}
               <div className="space-y-2">
-                <Label htmlFor="feedback" className="text-slate-300">Write your feedback</Label>
+                <Label htmlFor="feedback" className="text-muted-foreground font-mono text-xs">Write your feedback</Label>
                 <Textarea
                   id="feedback"
                   placeholder="Tell us about your experience, suggestions for improvement, or any issues you encountered..."
-                  className="min-h-[120px] bg-slate-800 border-slate-600 text-white placeholder:text-slate-500 focus:border-blue-500"
+                  className="min-h-[120px] noc-input border-border rounded-none focus-visible:ring-0 text-foreground font-mono placeholder:text-muted-foreground font-mono text-xs focus:border-blue-500"
                   value={feedback}
                   onChange={(e) => setFeedback(e.target.value)}
                 />
@@ -169,19 +169,19 @@ export default function FeedbackPage() {
 
               {/* Anonymous Toggle */}
               <div className="flex items-center justify-between">
-                <Label htmlFor="anonymous" className="text-slate-300">Submit anonymously</Label>
+                <Label htmlFor="anonymous" className="text-muted-foreground font-mono text-xs">Submit anonymously</Label>
                 <Switch
                   id="anonymous"
                   checked={anonymous}
                   onCheckedChange={setAnonymous}
-                  className="data-[state=checked]:bg-blue-600"
+                  className="data-[state=checked]:bg-primary"
                 />
               </div>
 
               {/* Submit Button */}
               <Button 
                 onClick={handleSubmit} 
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                className="w-full noc-button rounded-none border border-border hover:border-primary disabled:opacity-50 h-12"
                 disabled={!rating || !feedback.trim() || !category || loading}
               >
                 <Send className="mr-2 h-4 w-4" />
@@ -190,33 +190,33 @@ export default function FeedbackPage() {
 
               {/* Success Message */}
               {submitted && (
-                <div className="rounded-lg bg-green-900/20 p-4 text-green-400 border border-green-500/50">
+                <div className="rounded-none bg-green-900/20 p-4 text-green-400 border border-green-500/50">
                   <p className="font-medium">Thank you for your feedback!</p>
                   <p className="text-sm">Your review has been submitted successfully.</p>
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Reviews Display */}
-          <Card className="bg-slate-900/50 border-slate-700">
-            <CardHeader>
-              <CardTitle className="text-white">Recent Reviews</CardTitle>
-              <CardDescription className="text-slate-400">
+          <div className="noc-panel p-6 mb-6">
+            <div className="mb-4 border-b border-border pb-4">
+              <h3 className="text-sm font-mono text-primary uppercase flex items-center gap-2 mb-1">Recent Reviews</h3>
+              <p className="text-xs font-mono text-muted-foreground">
                 See what other users are saying about our application
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
+              </p>
+            </div>
+            <div className="space-y-4">
               <div className="space-y-6">
                 {reviews.map((review, index) => (
                   <div key={index} className="space-y-3">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20">
-                          <User className="h-5 w-5 text-blue-400" />
+                        <div className="flex h-10 w-10 items-center justify-center rounded-none bg-[#0d1117] border border-primary">
+                          <User className="h-5 w-5 text-primary" />
                         </div>
                         <div>
-                          <p className="font-medium text-white">{review.username}</p>
+                          <p className="font-medium text-foreground font-mono">{review.username}</p>
                           <div className="flex items-center gap-2">
                             <div className="flex">
                               {[1, 2, 3, 4, 5].map((star) => (
@@ -224,63 +224,63 @@ export default function FeedbackPage() {
                                   key={star}
                                   className={`h-4 w-4 ${
                                     star <= review.rating
-                                      ? "fill-yellow-400 text-yellow-400"
+                                      ? "fill-primary text-primary"
                                       : "text-slate-600"
                                   }`}
                                 />
                               ))}
                             </div>
-                            <Badge variant="outline" className="text-xs border-slate-600 text-slate-400">
+                            <Badge variant="outline" className="text-xs border-border text-muted-foreground font-mono text-xs">
                               {review.category}
                             </Badge>
                           </div>
                         </div>
                       </div>
-                      <span className="text-sm text-slate-500">{new Date(review.createdAt || new Date()).toLocaleDateString()}</span>
+                      <span className="text-sm text-muted-foreground font-mono text-xs">{new Date(review.createdAt || new Date()).toLocaleDateString()}</span>
                     </div>
-                    <p className="text-sm text-slate-300 pl-13">
+                    <p className="text-sm text-muted-foreground font-mono text-xs pl-13">
                       {review.comment}
                     </p>
                     {index < reviews.length - 1 && <Separator className="bg-slate-700" />}
                   </div>
                 ))}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
         {/* Statistics */}
-        <Card className="mt-6 bg-slate-900/50 border-slate-700">
-          <CardHeader>
-            <CardTitle className="text-white">Feedback Statistics</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <div className="noc-panel p-6 mb-6">
+          <div className="mb-4 border-b border-border pb-4">
+            <h3 className="text-sm font-mono text-primary uppercase flex items-center gap-2 mb-1">Feedback Statistics</h3>
+          </div>
+          <div className="space-y-4">
             <div className="grid gap-4 md:grid-cols-4">
               <div className="text-center">
-                <div className="text-2xl font-bold text-white">
+                <div className="text-lg font-mono font-bold uppercase tracking-widest text-foreground font-mono">
                   {reviews.length > 0 ? (reviews.reduce((acc, curr) => acc + curr.rating, 0) / reviews.length).toFixed(1) : "0"}
                 </div>
-                <div className="text-sm text-slate-400">Average Rating</div>
+                <div className="text-sm text-muted-foreground font-mono text-xs">Average Rating</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-white">{reviews.length}</div>
-                <div className="text-sm text-slate-400">Total Reviews</div>
+                <div className="text-lg font-mono font-bold uppercase tracking-widest text-foreground font-mono">{reviews.length}</div>
+                <div className="text-sm text-muted-foreground font-mono text-xs">Total Reviews</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-white">
+                <div className="text-lg font-mono font-bold uppercase tracking-widest text-foreground font-mono">
                   {reviews.length > 0 ? Math.round((reviews.filter(r => r.rating >= 4).length / reviews.length) * 100) : 0}%
                 </div>
-                <div className="text-sm text-slate-400">Positive Feedback</div>
+                <div className="text-sm text-muted-foreground font-mono text-xs">Positive Feedback</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-white">
+                <div className="text-lg font-mono font-bold uppercase tracking-widest text-foreground font-mono">
                   {reviews.filter(r => new Date(r.createdAt || new Date()).getMonth() === new Date().getMonth()).length}
                 </div>
-                <div className="text-sm text-slate-400">This Month</div>
+                <div className="text-sm text-muted-foreground font-mono text-xs">This Month</div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </main>
     </div>
   )

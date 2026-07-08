@@ -6,7 +6,12 @@ const LOCAL_ORIGINS = [
 ]
 
 export function getAllowedOrigins(): string[] {
-  const origins = new Set<string>(LOCAL_ORIGINS)
+  const origins = new Set<string>()
+
+  if (process.env.NODE_ENV !== "production") {
+    // Development mode: Allow localhost
+    LOCAL_ORIGINS.forEach(origin => origins.add(origin))
+  }
 
   if (process.env.CLIENT_URL) {
     origins.add(process.env.CLIENT_URL.trim())

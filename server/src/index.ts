@@ -1,12 +1,16 @@
 import "dotenv/config"
 import cors from "cors"
 import express from "express"
+import helmet from "helmet"
+import compression from "compression"
+import morgan from "morgan"
 import { getAllowedOrigins } from "./lib/cors.js"
 import exportsRouter from "./routes/exports.js"
 import blockedIpsRouter from "./routes/blocked-ips.routes.js"
 import { statsRouter } from "./routes/stats.routes.js"
 import { blockedCheckMiddleware } from "./middlewares/blocked-check.middleware.js"
 import { globalRateLimiter } from "./middlewares/rate-limiters.middleware.js"
+import { globalErrorHandler } from "./middlewares/error.middleware.js"
 import { authRoutes } from "./routes/auth.routes.js"
 import mongoose from "mongoose"
 import cookieParser from "cookie-parser"
@@ -17,6 +21,11 @@ const app = express()
 const PORT = Number(process.env.PORT) || 4000
 const HOST = process.env.HOST || "localhost"
 const isProduction = process.env.NODE_ENV === "production"
+
+// Production Middlewares
+app.use(helmet())
+app.use(compression())
+app.use(morgan(isProduction ? "combined" : "dev"))
 
 app.use(
   cors({
@@ -49,6 +58,9 @@ app.use("/api/stats", statsRouter)
 app.use("/api/auth", authRoutes)
 app.use("/api/analyze", analysisRouter)
 app.use("/api/feedback", feedbackRouter)
+
+// Global Error Handler must be the last middleware
+app.use(globalErrorHandler)
 
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/securenet"
 
