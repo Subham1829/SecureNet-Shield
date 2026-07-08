@@ -27,11 +27,12 @@ export default function LandingPage() {
           </div>
           
           <nav className="hidden lg:flex items-center gap-8">
-            {['Product', 'Pricing', 'Use Cases', 'Program', 'Blog'].map((item) => (
-              <button key={item} className="flex items-center gap-1.5 text-[15px] font-medium text-muted-foreground hover:text-foreground transition-colors">
-                {item} <ChevronDown className="w-3.5 h-3.5 opacity-60" />
-              </button>
-            ))}
+            <Link href="/dashboard" className="flex items-center gap-1.5 text-[15px] font-medium text-muted-foreground hover:text-foreground transition-colors">
+              Dashboard
+            </Link>
+            <Link href="/feedback" className="flex items-center gap-1.5 text-[15px] font-medium text-muted-foreground hover:text-foreground transition-colors">
+              Feedback
+            </Link>
           </nav>
           
           <div className="flex items-center gap-4">

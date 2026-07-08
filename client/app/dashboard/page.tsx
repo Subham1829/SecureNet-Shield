@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import {
   Search,
@@ -29,7 +30,7 @@ import {
   Download,
   FileText,
   TableIcon,
-} from "lucide-react"
+ User, } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -51,6 +52,17 @@ import { ExportService } from "@/lib/export-service"
 import { apiUrl } from "@/lib/api"
 
 export default function DashboardPage() {
+  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+    } else {
+      setIsAuthenticated(true);
+    }
+  }, [router]);
   const [ipInput, setIpInput] = useState("")
   const [generatedIp, setGeneratedIp] = useState("")
   const [autoBlock, setAutoBlock] = useState(true)
@@ -793,6 +805,8 @@ export default function DashboardPage() {
     })
   }
 
+  if (!isAuthenticated) return null;
+
   return (
     <div className="flex h-screen bg-slate-950">
       {/* Desktop Sidebar */}
@@ -837,6 +851,11 @@ export default function DashboardPage() {
               >
                 <Download className="mr-2 h-4 w-4" />
                 Quick Export
+              </Button>
+              <Button size="icon" variant="ghost" className="rounded-full bg-primary/10 text-primary hover:bg-primary/20" asChild>
+                <Link href="/settings">
+                  <User className="h-5 w-5" />
+                </Link>
               </Button>
             </div>
           </div>

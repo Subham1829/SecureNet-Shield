@@ -1,8 +1,11 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { Star, Send, ArrowLeft, Shield, User } from 'lucide-react'
+import { Star, Send, ArrowLeft, Shield, User, Menu } from 'lucide-react'
+import { AppSidebar } from "@/components/AppSidebar"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -14,12 +17,24 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 
 export default function FeedbackPage() {
+  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+    } else {
+      setIsAuthenticated(true);
+    }
+  }, [router]);
   const [rating, setRating] = useState(0)
   const [hoveredRating, setHoveredRating] = useState(0)
   const [feedback, setFeedback] = useState("")
   const [category, setCategory] = useState("")
   const [anonymous, setAnonymous] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const [reviews, setReviews] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
@@ -73,49 +88,66 @@ export default function FeedbackPage() {
     }
   }
 
+  if (!isAuthenticated) return null;
+
   return (
-    <div className="min-h-screen bg-[#0d1224] selection:bg-[#2f6bff] selection:text-white font-sans text-[#f5f5f7]">
-      {/* Background Glow Effect */}
-      <div 
-        className="absolute top-[-20%] right-[-10%] w-[50%] h-[50%] bg-[#2563eb]/20 blur-[120px] rounded-full pointer-events-none" 
-      />
+    <div className="flex h-screen bg-slate-950 font-sans text-foreground">
+      {/* Desktop Sidebar */}
+      <div className="hidden w-64 lg:block">
+        <AppSidebar />
+      </div>
 
-      {/* Header */}
-      <header className="border-b border-white/5 bg-[#10141f]/80 backdrop-blur-md px-6 py-4 sticky top-0 z-50">
-        <div className="mx-auto max-w-6xl">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" asChild className="text-[#8b93a7] hover:text-white hover:bg-white/5 rounded-lg transition-colors border-0">
-              <Link href="/dashboard">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Dashboard
-              </Link>
-            </Button>
-            <div className="flex items-center gap-3 ml-auto sm:ml-0">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#2f6bff] shadow-[0_0_20px_rgba(47,107,255,0.4)]">
-                <Shield className="h-5 w-5 text-white" />
-              </div>
-              <h1 className="text-xl font-bold text-white tracking-tight">Feedback & Reviews</h1>
+      {/* Mobile Sidebar */}
+      <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
+        <SheetContent side="left" className="w-64 p-0 bg-background">
+          <AppSidebar />
+        </SheetContent>
+      </Sheet>
+
+      {/* Main Content */}
+      <div className="flex-1 overflow-auto">
+        <header className="border-b border-border bg-background/80 backdrop-blur-sm px-6 py-4 sticky top-0 z-50">
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-4">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="lg:hidden text-muted-foreground hover:text-foreground">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-64 p-0 bg-background">
+                <AppSidebar />
+              </SheetContent>
+            </Sheet>
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">Feedback & Reviews</h1>
+              <p className="text-muted-foreground">Share your thoughts on IP Guardian</p>
             </div>
+            </div>
+              <Button size="icon" variant="ghost" className="rounded-full bg-primary/10 text-primary hover:bg-primary/20" asChild>
+                <Link href="/settings">
+                  <User className="h-5 w-5" />
+                </Link>
+              </Button>
           </div>
-        </div>
-      </header>
+        </header>
 
-      <main className="mx-auto max-w-6xl p-6 relative z-10 pt-10">
+        <main className="mx-auto max-w-6xl p-6 relative z-10 pt-4">
         <div className="grid gap-8 lg:grid-cols-2">
           {/* Feedback Form */}
-          <div className="p-8 rounded-2xl border border-white/5 bg-[#10141f] shadow-xl relative overflow-hidden group">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-px bg-gradient-to-r from-transparent via-[#2f6bff]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="p-8 rounded-2xl border border-border bg-card shadow-xl relative overflow-hidden group">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             
-            <div className="mb-6 border-b border-white/5 pb-6">
+            <div className="mb-6 border-b border-border pb-6">
               <h3 className="text-lg font-bold text-white flex items-center gap-2 mb-2">Share Your Feedback</h3>
-              <p className="text-sm text-[#8b93a7]">
+              <p className="text-sm text-muted-foreground">
                 Help us improve by sharing your experience with our IP blocking application
               </p>
             </div>
             <div className="space-y-6">
               {/* Star Rating */}
               <div className="space-y-3">
-                <Label className="text-sm font-semibold text-[#8b93a7]">Rate your experience</Label>
+                <Label className="text-sm font-semibold text-muted-foreground">Rate your experience</Label>
                 <div className="flex gap-2">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
@@ -128,15 +160,15 @@ export default function FeedbackPage() {
                       <Star
                         className={`h-8 w-8 transition-colors ${
                           star <= (hoveredRating || rating)
-                            ? "fill-[#2f6bff] text-[#2f6bff] drop-shadow-[0_0_8px_rgba(47,107,255,0.5)]"
-                            : "text-[#8b93a7]/30"
+                            ? "fill-primary text-primary drop-shadow-[0_0_8px_rgba(201,138,62,0.5)]"
+                            : "text-muted-foreground/30"
                         }`}
                       />
                     </button>
                   ))}
                 </div>
                 {rating > 0 && (
-                  <p className="text-sm font-medium text-[#2f6bff]">
+                  <p className="text-sm font-medium text-primary">
                     {rating === 1 && "Poor"}
                     {rating === 2 && "Fair"}
                     {rating === 3 && "Good"}
@@ -148,50 +180,50 @@ export default function FeedbackPage() {
 
               {/* Category Selection */}
               <div className="space-y-3">
-                <Label className="text-sm font-semibold text-[#8b93a7]">What did you use this app for?</Label>
+                <Label className="text-sm font-semibold text-muted-foreground">What did you use this app for?</Label>
                 <Select value={category} onValueChange={setCategory}>
-                  <SelectTrigger className="w-full bg-white/5 border-white/10 rounded-xl h-11 text-sm text-[#f5f5f7] focus:ring-1 focus:ring-[#2f6bff]/50 hover:bg-white/10 transition-colors">
+                  <SelectTrigger className="w-full bg-accent border-white/10 rounded-xl h-11 text-sm text-foreground focus:ring-1 focus:ring-[#2f6bff]/50 hover:bg-white/10 transition-colors">
                     <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#10141f] border-white/10 text-[#f5f5f7] rounded-xl">
-                    <SelectItem value="learning" className="focus:bg-[#2f6bff]/20 focus:text-white cursor-pointer rounded-lg">Learning</SelectItem>
-                    <SelectItem value="monitoring" className="focus:bg-[#2f6bff]/20 focus:text-white cursor-pointer rounded-lg">Monitoring</SelectItem>
-                    <SelectItem value="security" className="focus:bg-[#2f6bff]/20 focus:text-white cursor-pointer rounded-lg">Security</SelectItem>
-                    <SelectItem value="other" className="focus:bg-[#2f6bff]/20 focus:text-white cursor-pointer rounded-lg">Other</SelectItem>
+                  <SelectContent className="bg-card border-white/10 text-foreground rounded-xl">
+                    <SelectItem value="learning" className="focus:bg-primary/20 focus:text-white cursor-pointer rounded-lg">Learning</SelectItem>
+                    <SelectItem value="monitoring" className="focus:bg-primary/20 focus:text-white cursor-pointer rounded-lg">Monitoring</SelectItem>
+                    <SelectItem value="security" className="focus:bg-primary/20 focus:text-white cursor-pointer rounded-lg">Security</SelectItem>
+                    <SelectItem value="other" className="focus:bg-primary/20 focus:text-white cursor-pointer rounded-lg">Other</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               {/* Feedback Text */}
               <div className="space-y-3">
-                <Label htmlFor="feedback" className="text-sm font-semibold text-[#8b93a7]">Write your feedback</Label>
+                <Label htmlFor="feedback" className="text-sm font-semibold text-muted-foreground">Write your feedback</Label>
                 <Textarea
                   id="feedback"
                   placeholder="Tell us about your experience, suggestions for improvement, or any issues you encountered..."
-                  className="min-h-[140px] bg-white/5 border-white/10 rounded-xl p-4 text-sm text-[#f5f5f7] placeholder:text-[#8b93a7]/50 focus-visible:ring-1 focus-visible:ring-[#2f6bff]/50 hover:bg-white/10 transition-colors resize-none"
+                  className="min-h-[140px] bg-accent border-white/10 rounded-xl p-4 text-sm text-foreground placeholder:text-muted-foreground/50 focus-visible:ring-1 focus-visible:ring-[#2f6bff]/50 hover:bg-white/10 transition-colors resize-none"
                   value={feedback}
                   onChange={(e) => setFeedback(e.target.value)}
                 />
               </div>
 
               {/* Anonymous Toggle */}
-              <div className="flex items-center justify-between p-4 rounded-xl border border-white/5 bg-white/[0.02]">
+              <div className="flex items-center justify-between p-4 rounded-xl border border-border bg-white/[0.02]">
                 <div className="space-y-0.5">
-                  <Label htmlFor="anonymous" className="text-sm font-semibold text-[#f5f5f7]">Submit anonymously</Label>
-                  <p className="text-xs text-[#8b93a7]">Hide your username from public display</p>
+                  <Label htmlFor="anonymous" className="text-sm font-semibold text-foreground">Submit anonymously</Label>
+                  <p className="text-xs text-muted-foreground">Hide your username from public display</p>
                 </div>
                 <Switch
                   id="anonymous"
                   checked={anonymous}
                   onCheckedChange={setAnonymous}
-                  className="data-[state=checked]:bg-[#2f6bff] data-[state=unchecked]:bg-white/10"
+                  className="data-[state=checked]:bg-primary data-[state=unchecked]:bg-white/10"
                 />
               </div>
 
               {/* Submit Button */}
               <Button 
                 onClick={handleSubmit} 
-                className="w-full h-12 rounded-xl text-sm font-bold text-white bg-[#2f6bff] hover:bg-[#2563eb] transition-all shadow-[0_0_20px_rgba(47,107,255,0.2)] hover:shadow-[0_0_30px_rgba(47,107,255,0.4)] disabled:opacity-50 disabled:hover:shadow-none border-0"
+                className="w-full h-12 rounded-xl text-sm font-bold text-white bg-primary hover:bg-primary transition-all shadow-[0_0_20px_rgba(201,138,62,0.2)] hover:shadow-[0_0_30px_rgba(201,138,62,0.4)] disabled:opacity-50 disabled:hover:shadow-none border-0"
                 disabled={!rating || !feedback.trim() || !category || loading}
               >
                 <Send className="mr-2 h-4 w-4" />
@@ -214,24 +246,24 @@ export default function FeedbackPage() {
           </div>
 
           {/* Reviews Display */}
-          <div className="p-8 rounded-2xl border border-white/5 bg-[#10141f] shadow-xl">
-            <div className="mb-6 border-b border-white/5 pb-6 flex items-center justify-between">
+          <div className="p-8 rounded-2xl border border-border bg-card shadow-xl">
+            <div className="mb-6 border-b border-border pb-6 flex items-center justify-between">
               <div>
                 <h3 className="text-lg font-bold text-white flex items-center gap-2 mb-2">Recent Reviews</h3>
-                <p className="text-sm text-[#8b93a7]">
+                <p className="text-sm text-muted-foreground">
                   See what other users are saying
                 </p>
               </div>
-              <Badge variant="outline" className="bg-[#2f6bff]/10 text-[#2f6bff] border-[#2f6bff]/20 rounded-full px-3 py-1 font-semibold">
+              <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 rounded-full px-3 py-1 font-semibold">
                 {reviews.length} Total
               </Badge>
             </div>
             
             <div className="space-y-6 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
               {reviews.length === 0 ? (
-                <div className="text-center py-10 text-[#8b93a7]">
-                  <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4">
-                    <Star className="h-8 w-8 text-[#8b93a7]/30" />
+                <div className="text-center py-10 text-muted-foreground">
+                  <div className="w-16 h-16 rounded-full bg-accent flex items-center justify-center mx-auto mb-4">
+                    <Star className="h-8 w-8 text-muted-foreground/30" />
                   </div>
                   <p>No reviews yet. Be the first to share your feedback!</p>
                 </div>
@@ -240,11 +272,11 @@ export default function FeedbackPage() {
                   <div key={index} className="group">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#2f6bff]/20 to-purple-500/20 border border-white/10">
-                          <User className="h-5 w-5 text-[#f5f5f7]" />
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-purple-500/20 border border-white/10">
+                          <User className="h-5 w-5 text-foreground" />
                         </div>
                         <div>
-                          <p className="font-semibold text-[#f5f5f7] text-sm">
+                          <p className="font-semibold text-foreground text-sm">
                             {review.anonymous ? "Anonymous User" : review.username || "User"}
                           </p>
                           <div className="flex items-center gap-2 mt-1">
@@ -254,26 +286,26 @@ export default function FeedbackPage() {
                                   key={star}
                                   className={`h-3.5 w-3.5 ${
                                     star <= review.rating
-                                      ? "fill-[#2f6bff] text-[#2f6bff]"
-                                      : "text-[#8b93a7]/30"
+                                      ? "fill-primary text-primary"
+                                      : "text-muted-foreground/30"
                                   }`}
                                 />
                               ))}
                             </div>
-                            <span className="text-[10px] uppercase tracking-wider font-bold text-[#8b93a7] bg-white/5 px-2 py-0.5 rounded">
+                            <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground bg-accent px-2 py-0.5 rounded">
                               {review.category}
                             </span>
                           </div>
                         </div>
                       </div>
-                      <span className="text-xs font-medium text-[#8b93a7]">
+                      <span className="text-xs font-medium text-muted-foreground">
                         {new Date(review.createdAt || new Date()).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                       </span>
                     </div>
-                    <p className="text-sm text-[#8b93a7] pl-13 leading-relaxed">
+                    <p className="text-sm text-muted-foreground pl-13 leading-relaxed">
                       {review.comment}
                     </p>
-                    {index < reviews.length - 1 && <Separator className="mt-6 bg-white/5" />}
+                    {index < reviews.length - 1 && <Separator className="mt-6 bg-accent" />}
                   </div>
                 ))
               )}
@@ -282,47 +314,48 @@ export default function FeedbackPage() {
         </div>
 
         {/* Statistics */}
-        <div className="mt-8 p-8 rounded-2xl border border-white/5 bg-[#10141f] shadow-xl relative overflow-hidden">
-          <div className="absolute -right-20 -top-20 w-64 h-64 bg-[#2f6bff]/5 blur-[80px] rounded-full pointer-events-none" />
+        <div className="mt-8 p-8 rounded-2xl border border-border bg-card shadow-xl relative overflow-hidden">
+          <div className="absolute -right-20 -top-20 w-64 h-64 bg-primary/5 blur-[80px] rounded-full pointer-events-none" />
           
           <div className="mb-8 flex items-center justify-between">
             <h3 className="text-lg font-bold text-white flex items-center gap-2">Feedback Statistics</h3>
           </div>
           
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="p-5 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
-              <div className="text-sm font-semibold text-[#8b93a7] mb-2 uppercase tracking-wider">Average Rating</div>
+            <div className="p-5 rounded-2xl border border-border bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
+              <div className="text-sm font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Average Rating</div>
               <div className="text-3xl font-extrabold text-white flex items-baseline gap-2">
                 {reviews.length > 0 ? (reviews.reduce((acc, curr) => acc + curr.rating, 0) / reviews.length).toFixed(1) : "0.0"}
-                <Star className="h-5 w-5 fill-[#2f6bff] text-[#2f6bff] mb-1" />
+                <Star className="h-5 w-5 fill-primary text-primary mb-1" />
               </div>
             </div>
             
-            <div className="p-5 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
-              <div className="text-sm font-semibold text-[#8b93a7] mb-2 uppercase tracking-wider">Total Reviews</div>
+            <div className="p-5 rounded-2xl border border-border bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
+              <div className="text-sm font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Total Reviews</div>
               <div className="text-3xl font-extrabold text-white">
                 {reviews.length}
               </div>
             </div>
             
-            <div className="p-5 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
-              <div className="text-sm font-semibold text-[#8b93a7] mb-2 uppercase tracking-wider">Positive Feedback</div>
+            <div className="p-5 rounded-2xl border border-border bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
+              <div className="text-sm font-semibold text-muted-foreground mb-2 uppercase tracking-wider">Positive Feedback</div>
               <div className="text-3xl font-extrabold text-white flex items-center gap-2">
                 {reviews.length > 0 ? Math.round((reviews.filter(r => r.rating >= 4).length / reviews.length) * 100) : 0}%
-                <span className="text-[#2563eb] text-sm font-medium">↑</span>
+                <span className="text-primary text-sm font-medium">↑</span>
               </div>
             </div>
             
-            <div className="p-5 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
-              <div className="text-sm font-semibold text-[#8b93a7] mb-2 uppercase tracking-wider">This Month</div>
+            <div className="p-5 rounded-2xl border border-border bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
+              <div className="text-sm font-semibold text-muted-foreground mb-2 uppercase tracking-wider">This Month</div>
               <div className="text-3xl font-extrabold text-white flex items-center gap-2">
                 {reviews.filter(r => new Date(r.createdAt || new Date()).getMonth() === new Date().getMonth()).length}
-                <span className="text-[#2563eb] text-sm font-medium">New</span>
+                <span className="text-primary text-sm font-medium">New</span>
               </div>
             </div>
           </div>
         </div>
       </main>
+      </div>
       
       {/* Global styles for custom scrollbar within this page */}
       <style dangerouslySetInnerHTML={{__html: `

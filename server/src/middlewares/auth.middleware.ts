@@ -3,6 +3,9 @@ import jwt from "jsonwebtoken"
 import { BlacklistedToken } from "../models/BlacklistedToken.js"
 
 const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret_do_not_use_in_prod"
+if (process.env.NODE_ENV === "production" && !process.env.JWT_SECRET) {
+  throw new Error("JWT_SECRET is strictly required in production.")
+}
 
 // Extend Express Request type to include user information
 declare global {

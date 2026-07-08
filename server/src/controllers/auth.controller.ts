@@ -6,6 +6,9 @@ import { BlacklistedToken } from "../models/BlacklistedToken.js";
 import { sendOTPEmail } from "../lib/email.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret_do_not_use_in_prod";
+if (process.env.NODE_ENV === "production" && !process.env.JWT_SECRET) {
+  throw new Error("JWT_SECRET is strictly required in production.");
+}
 
 export const registerUser = async (req: Request, res: Response) => {
   try {

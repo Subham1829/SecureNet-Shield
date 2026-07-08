@@ -515,7 +515,7 @@ export default function ProxyDashboard() {
               <div className="flex items-center gap-md">
                 <button
                   className="px-md py-xs bg-background rounded text-xs text-muted-foreground hover:bg-accent disabled:opacity-50"
-                  disabled=""
+                  disabled={true}
                 >
                   Previous
                 </button>

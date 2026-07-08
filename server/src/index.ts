@@ -51,6 +51,7 @@ app.get("/health", (_req, res) => {
 
 import { analysisRouter } from "./routes/analysis.routes.js"
 import { feedbackRouter } from "./routes/feedback.routes.js"
+import { userRoutes } from "./routes/user.routes.js"
 
 app.use("/api/exports", exportsRouter)
 app.use("/api/blocked-ips", blockedIpsRouter)
@@ -58,11 +59,15 @@ app.use("/api/stats", statsRouter)
 app.use("/api/auth", authRoutes)
 app.use("/api/analyze", analysisRouter)
 app.use("/api/feedback", feedbackRouter)
+app.use("/api/user", userRoutes)
 
 // Global Error Handler must be the last middleware
 app.use(globalErrorHandler)
 
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/securenet"
+if (process.env.NODE_ENV === "production" && !process.env.MONGODB_URI) {
+  throw new Error("MONGODB_URI is strictly required in production.")
+}
 
 mongoose
   .connect(MONGODB_URI)
