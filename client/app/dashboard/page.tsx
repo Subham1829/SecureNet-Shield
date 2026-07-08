@@ -479,7 +479,7 @@ export default function DashboardPage() {
       cons: ["Slower execution speed", "GIL limitations for threading", "Higher memory usage"],
       useCase: "Intelligent IP threat analysis using machine learning algorithms",
       icon: Activity,
-      color: "blue",
+      color: "primary",
     },
     {
       name: "Go",
@@ -545,7 +545,7 @@ export default function DashboardPage() {
       cons: ["Microsoft ecosystem dependency", "Licensing costs", "Less popular in startups"],
       useCase: "Corporate IP security systems integrated with Active Directory",
       icon: Network,
-      color: "purple",
+      color: "secondary",
     },
     {
       name: "Rust",
@@ -570,37 +570,37 @@ export default function DashboardPage() {
   ]
 
   const SidebarContent = () => (
-    <div className="flex h-full flex-col bg-slate-900 border-r border-slate-700">
-      <div className="flex h-16 items-center border-b border-slate-700 px-4">
+    <div className="flex h-full flex-col bg-background border-r border-border">
+      <div className="flex h-16 items-center border-b border-border px-4">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-600">
-            <Shield className="h-4 w-4 text-white" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+            <Shield className="h-4 w-4 text-foreground" />
           </div>
-          <span className="font-semibold text-white">IP Guardian</span>
+          <span className="font-semibold text-foreground">IP Guardian</span>
         </div>
       </div>
       <div className="flex-1 overflow-auto py-4">
         <nav className="grid gap-1 px-3">
-          <Button variant="ghost" className="justify-start text-slate-300 hover:text-white hover:bg-slate-800">
+          <Button variant="ghost" className="justify-start text-muted-foreground hover:text-foreground hover:bg-card">
             <Activity className="mr-3 h-4 w-4" />
             Dashboard
           </Button>
-          <Button variant="ghost" className="justify-start text-slate-300 hover:text-white hover:bg-slate-800" asChild>
+          <Button variant="ghost" className="justify-start text-muted-foreground hover:text-foreground hover:bg-card" asChild>
             <Link href="/feedback">
               <MessageSquare className="mr-3 h-4 w-4" />
               Feedback
             </Link>
           </Button>
-          <Button variant="ghost" className="justify-start text-slate-300 hover:text-white hover:bg-slate-800">
+          <Button variant="ghost" className="justify-start text-muted-foreground hover:text-foreground hover:bg-card">
             <Settings className="mr-3 h-4 w-4" />
             Settings
           </Button>
         </nav>
       </div>
-      <div className="border-t border-slate-700 p-4">
+      <div className="border-t border-border p-4">
         <Button
           variant="ghost"
-          className="w-full justify-start text-slate-300 hover:text-white hover:bg-slate-800"
+          className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-card"
           onClick={handleLogout}
         >
           <LogOut className="mr-3 h-4 w-4" />
@@ -802,7 +802,7 @@ export default function DashboardPage() {
 
       {/* Mobile Sidebar */}
       <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
-        <SheetContent side="left" className="w-64 p-0 bg-slate-900">
+        <SheetContent side="left" className="w-64 p-0 bg-background">
           <SidebarContent />
         </SheetContent>
       </Sheet>
@@ -810,22 +810,22 @@ export default function DashboardPage() {
       {/* Main Content */}
       <div className="flex-1 overflow-auto">
         {/* Header */}
-        <header className="border-b border-slate-700 bg-slate-900/50 backdrop-blur-sm px-6 py-4">
+        <header className="border-b border-border bg-background/80 backdrop-blur-sm px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon" className="lg:hidden text-slate-400 hover:text-white">
+                  <Button variant="ghost" size="icon" className="lg:hidden text-muted-foreground hover:text-foreground">
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="left" className="w-64 p-0 bg-slate-900">
+                <SheetContent side="left" className="w-64 p-0 bg-background">
                   <SidebarContent />
                 </SheetContent>
               </Sheet>
               <div>
-                <h1 className="text-2xl font-bold text-white">Network Security Dashboard</h1>
-                <p className="text-slate-400">Advanced IP analysis and threat protection</p>
+                <h1 className="text-2xl font-bold text-foreground">Network Security Dashboard</h1>
+                <p className="text-muted-foreground">Advanced IP analysis and threat protection</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -833,15 +833,11 @@ export default function DashboardPage() {
                 size="sm"
                 variant="outline"
                 onClick={() => exportSecurityReport("json")}
-                className="border-slate-600 text-slate-300 hover:text-white hover:border-blue-500"
+                className="border-border text-muted-foreground hover:text-foreground hover:border-primary"
               >
                 <Download className="mr-2 h-4 w-4" />
                 Quick Export
               </Button>
-              <div className="flex items-center gap-2 text-sm">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                <span className="text-slate-400">System Online</span>
-              </div>
             </div>
           </div>
         </header>
@@ -849,31 +845,31 @@ export default function DashboardPage() {
         {/* Dashboard Stats */}
         <div className="p-6">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
-            <Card className="bg-slate-900/50 border-slate-700">
+            <Card className="bg-background/80 border-border">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-slate-400">Total IPs Analyzed</p>
-                    <p className="text-2xl font-bold text-white">{stats.totalIPs.toLocaleString()}</p>
+                    <p className="text-sm font-medium text-muted-foreground">Total IPs Analyzed</p>
+                    <p className="text-2xl font-bold text-foreground">{stats.totalIPs.toLocaleString()}</p>
                   </div>
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/10">
-                    <Eye className="h-6 w-6 text-blue-400" />
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                    <Eye className="h-6 w-6 text-primary" />
                   </div>
                 </div>
                 <div className="mt-4 flex items-center text-sm">
                   <TrendingUp className="mr-1 h-4 w-4 text-green-400" />
                   <span className="text-green-400">+12%</span>
-                  <span className="text-slate-400 ml-1">from last month</span>
+                  <span className="text-muted-foreground ml-1">from last month</span>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-900/50 border-slate-700">
+            <Card className="bg-background/80 border-border">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-slate-400">Blocked IPs</p>
-                    <p className="text-2xl font-bold text-white">{stats.blockedIPs}</p>
+                    <p className="text-sm font-medium text-muted-foreground">Blocked IPs</p>
+                    <p className="text-2xl font-bold text-foreground">{stats.blockedIPs}</p>
                   </div>
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10">
                     <Ban className="h-6 w-6 text-red-400" />
@@ -882,20 +878,20 @@ export default function DashboardPage() {
                 <div className="mt-4 flex items-center text-sm">
                   <AlertTriangle className="mr-1 h-4 w-4 text-yellow-400" />
                   <span className="text-yellow-400">+5</span>
-                  <span className="text-slate-400 ml-1">today</span>
+                  <span className="text-muted-foreground ml-1">today</span>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-900/50 border-slate-700">
+            <Card className="bg-background/80 border-border">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-slate-400">Threats Blocked</p>
-                    <p className="text-2xl font-bold text-white">{stats.threatsBlocked}</p>
+                    <p className="text-sm font-medium text-muted-foreground">Threats Blocked</p>
+                    <p className="text-2xl font-bold text-foreground">{stats.threatsBlocked}</p>
                   </div>
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-500/10">
-                    <Shield className="h-6 w-6 text-purple-400" />
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary/10">
+                    <Shield className="h-6 w-6 text-secondary" />
                   </div>
                 </div>
                 <div className="mt-4 flex items-center text-sm">
@@ -905,12 +901,12 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-900/50 border-slate-700">
+            <Card className="bg-background/80 border-border">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-slate-400">System Uptime</p>
-                    <p className="text-2xl font-bold text-white">{stats.uptime}%</p>
+                    <p className="text-sm font-medium text-muted-foreground">System Uptime</p>
+                    <p className="text-2xl font-bold text-foreground">{stats.uptime}%</p>
                   </div>
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-500/10">
                     <Zap className="h-6 w-6 text-green-400" />
@@ -927,24 +923,24 @@ export default function DashboardPage() {
 
           {/* Main Dashboard Content */}
           <Tabs defaultValue="analysis" className="space-y-6">
-            <TabsList className="bg-slate-800 border-slate-700 text-slate-400">
-              <TabsTrigger value="analysis" className="data-[state=active]:bg-slate-700 data-[state=active]:text-white">
+            <TabsList className="bg-card border-border text-muted-foreground">
+              <TabsTrigger value="analysis" className="data-[state=active]:bg-slate-700 data-[state=active]:text-foreground">
                 Analysis
               </TabsTrigger>
-              <TabsTrigger value="blocking" className="data-[state=active]:bg-slate-700 data-[state=active]:text-white">
+              <TabsTrigger value="blocking" className="data-[state=active]:bg-slate-700 data-[state=active]:text-foreground">
                 Block
               </TabsTrigger>
               <TabsTrigger
                 value="generator"
-                className="data-[state=active]:bg-slate-700 data-[state=active]:text-white"
+                className="data-[state=active]:bg-slate-700 data-[state=active]:text-foreground"
               >
                 Generate
               </TabsTrigger>
 
-              <TabsTrigger value="reports" className="data-[state=active]:bg-slate-700 data-[state=active]:text-white">
+              <TabsTrigger value="reports" className="data-[state=active]:bg-slate-700 data-[state=active]:text-foreground">
                 Reports
               </TabsTrigger>
-              <TabsTrigger value="details" className="data-[state=active]:bg-slate-700 data-[state=active]:text-white">
+              <TabsTrigger value="details" className="data-[state=active]:bg-slate-700 data-[state=active]:text-foreground">
                 Details
               </TabsTrigger>
 
@@ -952,13 +948,13 @@ export default function DashboardPage() {
 
             {/* 1. IP Analysis Tab */}
             <TabsContent value="analysis" className="space-y-6">
-              <Card className="bg-slate-900/50 border-slate-700">
+              <Card className="bg-background/80 border-border">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-white">
-                    <Search className="h-5 w-5 text-blue-400" />
+                  <CardTitle className="flex items-center gap-2 text-foreground">
+                    <Search className="h-5 w-5 text-primary" />
                     IP Address Analysis & Validation
                   </CardTitle>
-                  <CardDescription className="text-slate-400">
+                  <CardDescription className="text-muted-foreground">
                     Enter any IP address to validate format and analyze its properties
                   </CardDescription>
                 </CardHeader>
@@ -968,12 +964,12 @@ export default function DashboardPage() {
                       placeholder="Enter IP address (IPv4: 192.168.1.1 or IPv6: 2001:db8::1)"
                       value={ipInput}
                       onChange={(e) => setIpInput(e.target.value)}
-                      className="flex-1 bg-slate-800 border-slate-600 text-white placeholder:text-slate-500 focus:border-blue-500"
+                      className="flex-1 bg-card border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary"
                     />
                     <Button
                       onClick={analyzeIP}
                       disabled={!ipInput || isAnalyzing}
-                      className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground"
                     >
                       {isAnalyzing ? (
                         <div className="flex items-center gap-2">
@@ -988,62 +984,62 @@ export default function DashboardPage() {
 
                   {ipAnalysis && (
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                      <Card className="bg-slate-800/50 border-slate-600">
+                      <Card className="bg-card/50 border-border">
                         <CardHeader>
-                          <CardTitle className="text-lg text-white">Basic Information</CardTitle>
+                          <CardTitle className="text-lg text-foreground">Basic Information</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3">
                           <div className="flex items-center justify-between">
-                            <span className="font-medium text-slate-300">IP Address:</span>
-                            <span className="font-mono text-white">{ipAnalysis.ip}</span>
+                            <span className="font-medium text-muted-foreground">IP Address:</span>
+                            <span className="font-mono text-foreground">{ipAnalysis.ip}</span>
                           </div>
                           <div className="flex items-center justify-between">
-                            <span className="font-medium text-slate-300">Type:</span>
-                            <Badge variant="outline" className="border-blue-500 text-blue-400">
+                            <span className="font-medium text-muted-foreground">Type:</span>
+                            <Badge variant="outline" className="border-primary text-primary">
                               {ipAnalysis.type}
                             </Badge>
                           </div>
                           <div className="flex items-center justify-between">
-                            <span className="font-medium text-slate-300">Status:</span>
+                            <span className="font-medium text-muted-foreground">Status:</span>
                             <Badge variant={ipAnalysis.status === "Valid" ? "default" : "destructive"}>
                               {ipAnalysis.status}
                             </Badge>
                           </div>
                           <div className="flex items-center justify-between">
-                            <span className="font-medium text-slate-300">Category:</span>
-                            <Badge variant="secondary" className="bg-slate-700 text-slate-300">
+                            <span className="font-medium text-muted-foreground">Category:</span>
+                            <Badge variant="secondary" className="bg-slate-700 text-muted-foreground">
                               {ipAnalysis.category}
                             </Badge>
                           </div>
                         </CardContent>
                       </Card>
 
-                      <Card className="bg-slate-800/50 border-slate-600">
+                      <Card className="bg-card/50 border-border">
                         <CardHeader>
-                          <CardTitle className="text-lg text-white">Security Analysis</CardTitle>
+                          <CardTitle className="text-lg text-foreground">Security Analysis</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3">
                           <div className="flex items-center justify-between">
-                            <span className="font-medium text-slate-300">Threat Level:</span>
+                            <span className="font-medium text-muted-foreground">Threat Level:</span>
                             <Badge variant={ipAnalysis.security.threat === "Clean" ? "default" : "destructive"}>
                               {ipAnalysis.security.threat}
                             </Badge>
                           </div>
                           <div className="flex items-center justify-between">
-                            <span className="font-medium text-slate-300">Reputation:</span>
+                            <span className="font-medium text-muted-foreground">Reputation:</span>
                             <div className="flex items-center gap-2">
                               <Progress value={ipAnalysis.security.reputation} className="w-16 h-2 bg-slate-700" />
-                              <span className="text-sm text-slate-400">{ipAnalysis.security.reputation}%</span>
+                              <span className="text-sm text-muted-foreground">{ipAnalysis.security.reputation}%</span>
                             </div>
                           </div>
                           <div className="flex items-center justify-between">
-                            <span className="font-medium text-slate-300">Blacklisted:</span>
+                            <span className="font-medium text-muted-foreground">Blacklisted:</span>
                             <Badge variant={ipAnalysis.security.blacklisted ? "destructive" : "default"}>
                               {ipAnalysis.security.blacklisted ? "Yes" : "No"}
                             </Badge>
                           </div>
                           <div className="flex items-center justify-between">
-                            <span className="font-medium text-slate-300">Proxy/VPN:</span>
+                            <span className="font-medium text-muted-foreground">Proxy/VPN:</span>
                             <Badge
                               variant={ipAnalysis.security.proxy || ipAnalysis.security.vpn ? "secondary" : "default"}
                             >
@@ -1053,22 +1049,22 @@ export default function DashboardPage() {
                         </CardContent>
                       </Card>
 
-                      <Card className="bg-slate-800/50 border-slate-600">
+                      <Card className="bg-card/50 border-border">
                         <CardHeader>
-                          <CardTitle className="text-lg text-white">Network Details</CardTitle>
+                          <CardTitle className="text-lg text-foreground">Network Details</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3">
                           <div className="flex items-center justify-between">
-                            <span className="font-medium text-slate-300">ASN:</span>
-                            <span className="font-mono text-white">{ipAnalysis.network.asn}</span>
+                            <span className="font-medium text-muted-foreground">ASN:</span>
+                            <span className="font-mono text-foreground">{ipAnalysis.network.asn}</span>
                           </div>
                           <div className="flex items-center justify-between">
-                            <span className="font-medium text-slate-300">Domain:</span>
-                            <span className="text-white">{ipAnalysis.network.domain}</span>
+                            <span className="font-medium text-muted-foreground">Domain:</span>
+                            <span className="text-foreground">{ipAnalysis.network.domain}</span>
                           </div>
                           <div className="flex items-center justify-between">
-                            <span className="font-medium text-slate-300">Usage:</span>
-                            <Badge variant="outline" className="border-purple-500 text-purple-400">
+                            <span className="font-medium text-muted-foreground">Usage:</span>
+                            <Badge variant="outline" className="border-secondary text-secondary">
                               {ipAnalysis.network.usage}
                             </Badge>
                           </div>
@@ -1083,47 +1079,47 @@ export default function DashboardPage() {
             {/* 3. IP Blocking Tab */}
             <TabsContent value="blocking" className="space-y-6">
               <div className="grid gap-6 lg:grid-cols-2">
-                <Card className="bg-slate-900/50 border-slate-700">
+                <Card className="bg-background/80 border-border">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-white">
+                    <CardTitle className="flex items-center gap-2 text-foreground">
                       <Ban className="h-5 w-5 text-red-400" />
                       Block Fake/Malicious IPs
                     </CardTitle>
-                    <CardDescription className="text-slate-400">
+                    <CardDescription className="text-muted-foreground">
                       Manually block suspicious IP addresses or enable auto-blocking
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg">
+                    <div className="flex items-center justify-between p-4 bg-card/50 rounded-lg">
                       <div>
-                        <Label htmlFor="auto-block" className="text-slate-300 font-medium">
+                        <Label htmlFor="auto-block" className="text-muted-foreground font-medium">
                           Auto-block suspicious IPs
                         </Label>
-                        <p className="text-sm text-slate-400">Automatically block IPs with suspicious behavior</p>
+                        <p className="text-sm text-muted-foreground">Automatically block IPs with suspicious behavior</p>
                       </div>
                       <Switch
                         id="auto-block"
                         checked={autoBlock}
                         onCheckedChange={setAutoBlock}
-                        className="data-[state=checked]:bg-blue-600"
+                        className="data-[state=checked]:bg-primary"
                       />
                     </div>
 
                     <Separator className="bg-slate-700" />
 
                     <div className="space-y-3">
-                      <Label className="text-slate-300 font-medium">Manual IP Blocking</Label>
+                      <Label className="text-muted-foreground font-medium">Manual IP Blocking</Label>
                       <Input
                         placeholder="Enter IP address to block"
                         value={ipInput}
                         onChange={(e) => setIpInput(e.target.value)}
-                        className="bg-slate-800 border-slate-600 text-white placeholder:text-slate-500 focus:border-red-500"
+                        className="bg-card border-border text-foreground placeholder:text-muted-foreground focus:border-red-500"
                       />
                       <Textarea
                         placeholder="Reason for blocking (required)"
                         value={blockReason}
                         onChange={(e) => setBlockReason(e.target.value)}
-                        className="min-h-[80px] bg-slate-800 border-slate-600 text-white placeholder:text-slate-500 focus:border-red-500"
+                        className="min-h-[80px] bg-card border-border text-foreground placeholder:text-muted-foreground focus:border-red-500"
                       />
                       <Button
                         onClick={blockIP}
@@ -1143,12 +1139,12 @@ export default function DashboardPage() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-slate-900/50 border-slate-700">
+                <Card className="bg-background/80 border-border">
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <div>
-                        <CardTitle className="text-white">Recently Blocked IPs</CardTitle>
-                        <CardDescription className="text-slate-400">
+                        <CardTitle className="text-foreground">Recently Blocked IPs</CardTitle>
+                        <CardDescription className="text-muted-foreground">
                           View and manage blocked IP addresses
                         </CardDescription>
                       </div>
@@ -1158,7 +1154,7 @@ export default function DashboardPage() {
                           variant="outline"
                           onClick={() => exportBlockedIPs("csv")}
                           disabled={isExporting}
-                          className="border-slate-600 text-slate-300 hover:text-white hover:border-green-500"
+                          className="border-border text-muted-foreground hover:text-foreground hover:border-green-500"
                         >
                           <TableIcon className="mr-2 h-4 w-4" />
                           {isExporting ? "Exporting..." : "CSV"}
@@ -1168,7 +1164,7 @@ export default function DashboardPage() {
                           variant="outline"
                           onClick={() => exportBlockedIPs("json")}
                           disabled={isExporting}
-                          className="border-slate-600 text-slate-300 hover:text-white hover:border-blue-500"
+                          className="border-border text-muted-foreground hover:text-foreground hover:border-primary"
                         >
                           <FileText className="mr-2 h-4 w-4" />
                           {isExporting ? "Exporting..." : "JSON"}
@@ -1181,11 +1177,11 @@ export default function DashboardPage() {
                       {blockedIPs.map((ip, index) => (
                         <div
                           key={index}
-                          className="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg border border-slate-600"
+                          className="flex items-center justify-between p-4 bg-card/50 rounded-lg border border-border"
                         >
                           <div className="space-y-1">
                             <div className="flex items-center gap-2">
-                              <span className="font-mono text-sm text-white">{ip.ip}</span>
+                              <span className="font-mono text-sm text-foreground">{ip.ip}</span>
                               <Badge
                                 variant={
                                   ip.threat === "Critical"
@@ -1201,15 +1197,15 @@ export default function DashboardPage() {
                                 {ip.threat}
                               </Badge>
                             </div>
-                            <div className="text-xs text-slate-400">{ip.reason}</div>
-                            <div className="text-xs text-slate-500">
+                            <div className="text-xs text-muted-foreground">{ip.reason}</div>
+                            <div className="text-xs text-muted-foreground">
                               {new Date(ip.date).toISOString().split('T')[0]} • {ip.location}
                             </div>
                           </div>
                           <Button
                             size="sm"
                             variant="outline"
-                            className="border-slate-600 text-slate-300 hover:text-white bg-transparent"
+                            className="border-border text-muted-foreground hover:text-foreground bg-transparent"
                             onClick={() => unblockIP(ip.ip)}
                           >
                             Unblock
@@ -1217,8 +1213,8 @@ export default function DashboardPage() {
                         </div>
                       ))}
                     </div>
-                    <div className="mt-4 pt-4 border-t border-slate-700">
-                      <div className="flex items-center justify-between text-sm text-slate-400">
+                    <div className="mt-4 pt-4 border-t border-border">
+                      <div className="flex items-center justify-between text-sm text-muted-foreground">
                         <span>Total blocked: {blockedIPs.length} IPs</span>
                         <span>Last updated: {new Date().toLocaleDateString()}</span>
                       </div>
@@ -1230,13 +1226,13 @@ export default function DashboardPage() {
 
             {/* 4. IP Generator Tab */}
             <TabsContent value="generator" className="space-y-6">
-              <Card className="bg-slate-900/50 border-slate-700">
+              <Card className="bg-background/80 border-border">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-white">
+                  <CardTitle className="flex items-center gap-2 text-foreground">
                     <RefreshCw className="h-5 w-5 text-green-400" />
                     Generate New IP Addresses
                   </CardTitle>
-                  <CardDescription className="text-slate-400">
+                  <CardDescription className="text-muted-foreground">
                     Generate random IP addresses for testing, learning, and development
                   </CardDescription>
                 </CardHeader>
@@ -1245,7 +1241,7 @@ export default function DashboardPage() {
                     <Button
                       onClick={() => generateIP("ipv4")}
                       variant="outline"
-                      className="border-slate-600 text-slate-300 hover:text-white hover:border-blue-500"
+                      className="border-border text-muted-foreground hover:text-foreground hover:border-primary"
                     >
                       <Globe className="mr-2 h-4 w-4" />
                       Generate IPv4
@@ -1253,7 +1249,7 @@ export default function DashboardPage() {
                     <Button
                       onClick={() => generateIP("ipv6")}
                       variant="outline"
-                      className="border-slate-600 text-slate-300 hover:text-white hover:border-purple-500"
+                      className="border-border text-muted-foreground hover:text-foreground hover:border-secondary"
                     >
                       <Network className="mr-2 h-4 w-4" />
                       Generate IPv6
@@ -1261,7 +1257,7 @@ export default function DashboardPage() {
                     <Button
                       onClick={() => generateIP("private")}
                       variant="outline"
-                      className="border-slate-600 text-slate-300 hover:text-white hover:border-green-500"
+                      className="border-border text-muted-foreground hover:text-foreground hover:border-green-500"
                     >
                       <Wifi className="mr-2 h-4 w-4" />
                       Generate Private IP
@@ -1269,29 +1265,29 @@ export default function DashboardPage() {
                   </div>
 
                   {generatedIp && (
-                    <Card className="bg-slate-800/50 border-slate-600">
+                    <Card className="bg-card/50 border-border">
                       <CardContent className="pt-6">
                         <div className="space-y-4">
                           <div className="flex items-center justify-between">
-                            <span className="font-medium text-slate-300">Generated IP:</span>
-                            <Badge variant="outline" className="border-blue-500 text-blue-400">
+                            <span className="font-medium text-muted-foreground">Generated IP:</span>
+                            <Badge variant="outline" className="border-primary text-primary">
                               {generatedIp.includes(":") ? "IPv6" : "IPv4"}
                             </Badge>
                           </div>
-                          <div className="flex items-center gap-2 p-4 bg-slate-900/50 rounded-lg border border-slate-600">
-                            <span className="flex-1 font-mono text-lg text-white">{generatedIp}</span>
+                          <div className="flex items-center gap-2 p-4 bg-background/80 rounded-lg border border-border">
+                            <span className="flex-1 font-mono text-lg text-foreground">{generatedIp}</span>
                             <Button
                               size="sm"
                               variant="ghost"
                               onClick={() => copyToClipboard(generatedIp)}
-                              className="text-slate-400 hover:text-white"
+                              className="text-muted-foreground hover:text-foreground"
                             >
                               <Copy className="h-4 w-4" />
                             </Button>
                           </div>
                           <div className="flex items-center justify-between text-sm">
-                            <span className="text-slate-400">Category:</span>
-                            <Badge variant="secondary" className="bg-slate-700 text-slate-300">
+                            <span className="text-muted-foreground">Category:</span>
+                            <Badge variant="secondary" className="bg-slate-700 text-muted-foreground">
                               {getIPCategory(generatedIp)} IP
                             </Badge>
                           </div>
@@ -1307,13 +1303,13 @@ export default function DashboardPage() {
 
             {/* 8. Backend Languages Tab */}
             <TabsContent value="backend" className="space-y-6">
-              <Card className="bg-slate-900/50 border-slate-700">
+              <Card className="bg-background/80 border-border">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-white">
+                  <CardTitle className="flex items-center gap-2 text-foreground">
                     <Server className="h-5 w-5 text-green-400" />
                     Backend Languages for IP Blocking Applications
                   </CardTitle>
-                  <CardDescription className="text-slate-400">
+                  <CardDescription className="text-muted-foreground">
                     Choose the right backend technology for your IP security and network monitoring needs
                   </CardDescription>
                 </CardHeader>
@@ -1323,17 +1319,17 @@ export default function DashboardPage() {
                       const IconComponent = backend.icon
                       const colorClasses = {
                         green: "from-green-500/20 to-emerald-500/20 text-green-400",
-                        blue: "from-blue-500/20 to-indigo-500/20 text-blue-400",
+                        blue: "from-blue-500/20 to-indigo-500/20 text-primary",
                         cyan: "from-cyan-500/20 to-teal-500/20 text-cyan-400",
                         orange: "from-orange-500/20 to-red-500/20 text-orange-400",
-                        purple: "from-purple-500/20 to-violet-500/20 text-purple-400",
-                        red: "from-red-500/20 to-pink-500/20 text-red-400",
+                        purple: "from-purple-500/20 to-violet-500/20 text-secondary",
+                        red: "bg-destructive/10 text-destructive",
                       }
 
                       return (
                         <Card
                           key={index}
-                          className="bg-slate-800/50 border-slate-600 hover:border-slate-500 transition-colors"
+                          className="bg-card/50 border-border hover:border-slate-500 transition-colors"
                         >
                           <CardHeader>
                             <div className="flex items-start justify-between">
@@ -1344,8 +1340,8 @@ export default function DashboardPage() {
                                   <IconComponent className="h-6 w-6" />
                                 </div>
                                 <div>
-                                  <CardTitle className="text-xl text-white">{backend.name}</CardTitle>
-                                  <CardDescription className="text-slate-400">
+                                  <CardTitle className="text-xl text-foreground">{backend.name}</CardTitle>
+                                  <CardDescription className="text-muted-foreground">
                                     {backend.language} • {backend.popularity} Popularity
                                   </CardDescription>
                                 </div>
@@ -1357,19 +1353,19 @@ export default function DashboardPage() {
                                 {backend.popularity}
                               </Badge>
                             </div>
-                            <p className="text-slate-300 text-sm mt-2">{backend.description}</p>
+                            <p className="text-muted-foreground text-sm mt-2">{backend.description}</p>
                           </CardHeader>
 
                           <CardContent className="space-y-4">
                             {/* Key Features */}
                             <div>
-                              <h4 className="font-medium text-white mb-2 flex items-center gap-2">
+                              <h4 className="font-medium text-foreground mb-2 flex items-center gap-2">
                                 <CheckCircle className="h-4 w-4 text-green-400" />
                                 Key Features
                               </h4>
                               <div className="space-y-1">
                                 {backend.features.map((feature, idx) => (
-                                  <div key={idx} className="flex items-center gap-2 text-sm text-slate-300">
+                                  <div key={idx} className="flex items-center gap-2 text-sm text-muted-foreground">
                                     <div className="w-1 h-1 bg-slate-500 rounded-full" />
                                     {feature}
                                   </div>
@@ -1378,20 +1374,20 @@ export default function DashboardPage() {
                             </div>
 
                             {/* Best For */}
-                            <div className="p-3 bg-slate-900/50 rounded-lg border border-slate-600">
+                            <div className="p-3 bg-background/80 rounded-lg border border-border">
                               <div className="flex items-center gap-2 mb-1">
                                 <Zap className="h-4 w-4 text-yellow-400" />
-                                <span className="font-medium text-white text-sm">Best For</span>
+                                <span className="font-medium text-foreground text-sm">Best For</span>
                               </div>
-                              <p className="text-sm text-slate-300">{backend.bestFor}</p>
+                              <p className="text-sm text-muted-foreground">{backend.bestFor}</p>
                             </div>
 
                             {/* Databases */}
                             <div>
-                              <h4 className="font-medium text-white mb-2 text-sm">Supported Databases</h4>
+                              <h4 className="font-medium text-foreground mb-2 text-sm">Supported Databases</h4>
                               <div className="flex flex-wrap gap-1">
                                 {backend.databases.map((db, idx) => (
-                                  <Badge key={idx} variant="secondary" className="text-xs bg-slate-700 text-slate-300">
+                                  <Badge key={idx} variant="secondary" className="text-xs bg-slate-700 text-muted-foreground">
                                     {db}
                                   </Badge>
                                 ))}
@@ -1399,12 +1395,12 @@ export default function DashboardPage() {
                             </div>
 
                             {/* Use Case Example */}
-                            <div className="p-3 bg-blue-900/10 rounded-lg border border-blue-500/20">
+                            <div className="p-3 bg-primary/10 rounded-lg border border-primary/20">
                               <div className="flex items-center gap-2 mb-1">
-                                <Info className="h-4 w-4 text-blue-400" />
-                                <span className="font-medium text-blue-400 text-sm">Use Case</span>
+                                <Info className="h-4 w-4 text-primary" />
+                                <span className="font-medium text-primary text-sm">Use Case</span>
                               </div>
-                              <p className="text-sm text-slate-300">{backend.useCase}</p>
+                              <p className="text-sm text-muted-foreground">{backend.useCase}</p>
                             </div>
 
                             {/* Pros and Cons */}
@@ -1416,7 +1412,7 @@ export default function DashboardPage() {
                                 </h4>
                                 <div className="space-y-1">
                                   {backend.pros.slice(0, 3).map((pro, idx) => (
-                                    <div key={idx} className="text-xs text-slate-400 flex items-start gap-1">
+                                    <div key={idx} className="text-xs text-muted-foreground flex items-start gap-1">
                                       <div className="w-1 h-1 bg-green-400 rounded-full mt-1.5 flex-shrink-0" />
                                       {pro}
                                     </div>
@@ -1430,7 +1426,7 @@ export default function DashboardPage() {
                                 </h4>
                                 <div className="space-y-1">
                                   {backend.cons.slice(0, 3).map((con, idx) => (
-                                    <div key={idx} className="text-xs text-slate-400 flex items-start gap-1">
+                                    <div key={idx} className="text-xs text-muted-foreground flex items-start gap-1">
                                       <div className="w-1 h-1 bg-red-400 rounded-full mt-1.5 flex-shrink-0" />
                                       {con}
                                     </div>
@@ -1444,10 +1440,10 @@ export default function DashboardPage() {
                     })}
                   </div>
 
-                  <Card className="mt-8 bg-slate-800/50 border-slate-600">
+                  <Card className="mt-8 bg-card/50 border-border">
                     <CardHeader>
-                      <CardTitle className="text-white">Quick Comparison</CardTitle>
-                      <CardDescription className="text-slate-400">
+                      <CardTitle className="text-foreground">Quick Comparison</CardTitle>
+                      <CardDescription className="text-muted-foreground">
                         Compare backend languages for IP blocking applications
                       </CardDescription>
                     </CardHeader>
@@ -1455,18 +1451,18 @@ export default function DashboardPage() {
                       <div className="overflow-x-auto">
                         <Table>
                           <TableHeader>
-                            <TableRow className="border-slate-600">
-                              <TableHead className="text-slate-400">Language</TableHead>
-                              <TableHead className="text-slate-400">Performance</TableHead>
-                              <TableHead className="text-slate-400">Learning Curve</TableHead>
-                              <TableHead className="text-slate-400">Ecosystem</TableHead>
-                              <TableHead className="text-slate-400">Real-time</TableHead>
-                              <TableHead className="text-slate-400">Enterprise</TableHead>
+                            <TableRow className="border-border">
+                              <TableHead className="text-muted-foreground">Language</TableHead>
+                              <TableHead className="text-muted-foreground">Performance</TableHead>
+                              <TableHead className="text-muted-foreground">Learning Curve</TableHead>
+                              <TableHead className="text-muted-foreground">Ecosystem</TableHead>
+                              <TableHead className="text-muted-foreground">Real-time</TableHead>
+                              <TableHead className="text-muted-foreground">Enterprise</TableHead>
                             </TableRow>
                           </TableHeader>
                           <TableBody>
-                            <TableRow className="border-slate-600">
-                              <TableCell className="font-medium text-white">Node.js</TableCell>
+                            <TableRow className="border-border">
+                              <TableCell className="font-medium text-foreground">Node.js</TableCell>
                               <TableCell>
                                 <Badge className="bg-yellow-600">Good</Badge>
                               </TableCell>
@@ -1483,8 +1479,8 @@ export default function DashboardPage() {
                                 <Badge className="bg-yellow-600">Good</Badge>
                               </TableCell>
                             </TableRow>
-                            <TableRow className="border-slate-600">
-                              <TableCell className="font-medium text-white">Python</TableCell>
+                            <TableRow className="border-border">
+                              <TableCell className="font-medium text-foreground">Python</TableCell>
                               <TableCell>
                                 <Badge className="bg-yellow-600">Good</Badge>
                               </TableCell>
@@ -1501,8 +1497,8 @@ export default function DashboardPage() {
                                 <Badge className="bg-green-600">Excellent</Badge>
                               </TableCell>
                             </TableRow>
-                            <TableRow className="border-slate-600">
-                              <TableCell className="font-medium text-white">Go</TableCell>
+                            <TableRow className="border-border">
+                              <TableCell className="font-medium text-foreground">Go</TableCell>
                               <TableCell>
                                 <Badge className="bg-green-600">Excellent</Badge>
                               </TableCell>
@@ -1519,8 +1515,8 @@ export default function DashboardPage() {
                                 <Badge className="bg-green-600">Good</Badge>
                               </TableCell>
                             </TableRow>
-                            <TableRow className="border-slate-600">
-                              <TableCell className="font-medium text-white">Java</TableCell>
+                            <TableRow className="border-border">
+                              <TableCell className="font-medium text-foreground">Java</TableCell>
                               <TableCell>
                                 <Badge className="bg-green-600">Excellent</Badge>
                               </TableCell>
@@ -1537,8 +1533,8 @@ export default function DashboardPage() {
                                 <Badge className="bg-green-600">Excellent</Badge>
                               </TableCell>
                             </TableRow>
-                            <TableRow className="border-slate-600">
-                              <TableCell className="font-medium text-white">C#/.NET</TableCell>
+                            <TableRow className="border-border">
+                              <TableCell className="font-medium text-foreground">C#/.NET</TableCell>
                               <TableCell>
                                 <Badge className="bg-green-600">Excellent</Badge>
                               </TableCell>
@@ -1555,8 +1551,8 @@ export default function DashboardPage() {
                                 <Badge className="bg-green-600">Excellent</Badge>
                               </TableCell>
                             </TableRow>
-                            <TableRow className="border-slate-600">
-                              <TableCell className="font-medium text-white">Rust</TableCell>
+                            <TableRow className="border-border">
+                              <TableCell className="font-medium text-foreground">Rust</TableCell>
                               <TableCell>
                                 <Badge className="bg-green-600">Excellent</Badge>
                               </TableCell>
@@ -1588,39 +1584,39 @@ export default function DashboardPage() {
                       </CardHeader>
                       <CardContent>
                         <p className="text-green-300 font-medium mb-2">Recommended: Node.js</p>
-                        <p className="text-slate-300 text-sm">
+                        <p className="text-muted-foreground text-sm">
                           Fast development, same language as frontend, excellent for real-time IP monitoring, huge
                           ecosystem for rapid prototyping.
                         </p>
                       </CardContent>
                     </Card>
 
-                    <Card className="bg-blue-900/20 border-blue-500/50">
+                    <Card className="bg-blue-900/20 border-primary/50">
                       <CardHeader>
-                        <CardTitle className="text-blue-400 text-lg flex items-center gap-2">
+                        <CardTitle className="text-primary text-lg flex items-center gap-2">
                           <Shield className="h-5 w-5" />
                           For Enterprise
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
                         <p className="text-blue-300 font-medium mb-2">Recommended: Java or C#</p>
-                        <p className="text-slate-300 text-sm">
+                        <p className="text-muted-foreground text-sm">
                           Mature ecosystems, excellent tooling, strong typing, great for complex IP management systems
                           with enterprise integration.
                         </p>
                       </CardContent>
                     </Card>
 
-                    <Card className="bg-purple-900/20 border-purple-500/50">
+                    <Card className="bg-purple-900/20 border-secondary/50">
                       <CardHeader>
-                        <CardTitle className="text-purple-400 text-lg flex items-center gap-2">
+                        <CardTitle className="text-secondary text-lg flex items-center gap-2">
                           <Zap className="h-5 w-5" />
                           For Performance
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
                         <p className="text-purple-300 font-medium mb-2">Recommended: Go or Rust</p>
-                        <p className="text-slate-300 text-sm">
+                        <p className="text-muted-foreground text-sm">
                           Ultra-high performance, excellent concurrency, perfect for high-throughput IP filtering and
                           network security appliances.
                         </p>
@@ -1632,16 +1628,16 @@ export default function DashboardPage() {
             </TabsContent>
             <TabsContent value="reports" className="space-y-6">
               <Tabs defaultValue="export" className="space-y-6">
-                <TabsList className="bg-slate-800 border-slate-700 text-slate-400">
+                <TabsList className="bg-card border-border text-muted-foreground">
                   <TabsTrigger
                     value="export"
-                    className="data-[state=active]:bg-slate-700 data-[state=active]:text-white"
+                    className="data-[state=active]:bg-slate-700 data-[state=active]:text-foreground"
                   >
                     Export Data
                   </TabsTrigger>
                   <TabsTrigger
                     value="history"
-                    className="data-[state=active]:bg-slate-700 data-[state=active]:text-white"
+                    className="data-[state=active]:bg-slate-700 data-[state=active]:text-foreground"
                   >
                     Export History
                   </TabsTrigger>
@@ -1651,13 +1647,13 @@ export default function DashboardPage() {
                 <TabsContent value="export" className="space-y-6">
                   <div className="grid gap-6 lg:grid-cols-2">
                     {/* Export Controls */}
-                    <Card className="bg-slate-900/50 border-slate-700">
+                    <Card className="bg-background/80 border-border">
                       <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-white">
+                        <CardTitle className="flex items-center gap-2 text-foreground">
                           <Download className="h-5 w-5 text-green-400" />
                           Export Data
                         </CardTitle>
-                        <CardDescription className="text-slate-400">
+                        <CardDescription className="text-muted-foreground">
                           Download blocked IPs and security reports in CSV or JSON format
                         </CardDescription>
                       </CardHeader>
@@ -1666,10 +1662,10 @@ export default function DashboardPage() {
                         <div className="space-y-4">
                           <div className="flex items-center justify-between">
                             <div>
-                              <h4 className="font-medium text-white">Blocked IPs Database</h4>
-                              <p className="text-sm text-slate-400">Export all blocked IP addresses with details</p>
+                              <h4 className="font-medium text-foreground">Blocked IPs Database</h4>
+                              <p className="text-sm text-muted-foreground">Export all blocked IP addresses with details</p>
                             </div>
-                            <Badge variant="outline" className="border-slate-600 text-slate-400">
+                            <Badge variant="outline" className="border-border text-muted-foreground">
                               {blockedIPs.length} records
                             </Badge>
                           </div>
@@ -1699,10 +1695,10 @@ export default function DashboardPage() {
                         <div className="space-y-4">
                           <div className="flex items-center justify-between">
                             <div>
-                              <h4 className="font-medium text-white">Security Report</h4>
-                              <p className="text-sm text-slate-400">Comprehensive security analysis and statistics</p>
+                              <h4 className="font-medium text-foreground">Security Report</h4>
+                              <p className="text-sm text-muted-foreground">Comprehensive security analysis and statistics</p>
                             </div>
-                            <Badge variant="outline" className="border-slate-600 text-slate-400">
+                            <Badge variant="outline" className="border-border text-muted-foreground">
                               {new Date().toLocaleDateString()}
                             </Badge>
                           </div>
@@ -1726,9 +1722,9 @@ export default function DashboardPage() {
                           </div>
                         </div>
 
-                        <Alert className="bg-blue-900/20 border-blue-500/50">
-                          <Download className="h-4 w-4 text-blue-400" />
-                          <AlertDescription className="text-blue-400">
+                        <Alert className="bg-blue-900/20 border-primary/50">
+                          <Download className="h-4 w-4 text-primary" />
+                          <AlertDescription className="text-primary">
                             <strong>Export Info:</strong> Files are tracked in Export History and automatically named
                             with timestamps.
                           </AlertDescription>
@@ -1737,56 +1733,56 @@ export default function DashboardPage() {
                     </Card>
 
                     {/* Report Preview */}
-                    <Card className="bg-slate-900/50 border-slate-700">
+                    <Card className="bg-background/80 border-border">
                       <CardHeader>
-                        <CardTitle className="text-white">Report Preview</CardTitle>
-                        <CardDescription className="text-slate-400">
+                        <CardTitle className="text-foreground">Report Preview</CardTitle>
+                        <CardDescription className="text-muted-foreground">
                           Preview of data included in security reports
                         </CardDescription>
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-4">
                           <div className="grid gap-4 grid-cols-2">
-                            <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                              <div className="text-2xl font-bold text-white">{stats.totalIPs.toLocaleString()}</div>
-                              <div className="text-sm text-slate-400">Total IPs Analyzed</div>
+                            <div className="p-4 bg-card/50 rounded-lg border border-border">
+                              <div className="text-2xl font-bold text-foreground">{stats.totalIPs.toLocaleString()}</div>
+                              <div className="text-sm text-muted-foreground">Total IPs Analyzed</div>
                             </div>
-                            <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                              <div className="text-2xl font-bold text-white">{stats.blockedIPs}</div>
-                              <div className="text-sm text-slate-400">IPs Blocked</div>
+                            <div className="p-4 bg-card/50 rounded-lg border border-border">
+                              <div className="text-2xl font-bold text-foreground">{stats.blockedIPs}</div>
+                              <div className="text-sm text-muted-foreground">IPs Blocked</div>
                             </div>
-                            <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                              <div className="text-2xl font-bold text-white">{stats.threatsBlocked}</div>
-                              <div className="text-sm text-slate-400">Threats Blocked</div>
+                            <div className="p-4 bg-card/50 rounded-lg border border-border">
+                              <div className="text-2xl font-bold text-foreground">{stats.threatsBlocked}</div>
+                              <div className="text-sm text-muted-foreground">Threats Blocked</div>
                             </div>
-                            <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                              <div className="text-2xl font-bold text-white">{stats.uptime}%</div>
-                              <div className="text-sm text-slate-400">System Uptime</div>
+                            <div className="p-4 bg-card/50 rounded-lg border border-border">
+                              <div className="text-2xl font-bold text-foreground">{stats.uptime}%</div>
+                              <div className="text-sm text-muted-foreground">System Uptime</div>
                             </div>
                           </div>
 
                           <Separator className="bg-slate-700" />
 
                           <div className="space-y-3">
-                            <h4 className="font-medium text-white">Recent Export Activity</h4>
+                            <h4 className="font-medium text-foreground">Recent Export Activity</h4>
                             <div className="space-y-2">
                               {exportHistory.slice(0, 3).map((exp) => (
                                 <div
                                   key={exp.id}
-                                  className="flex justify-between items-center text-sm p-2 bg-slate-800/30 rounded"
+                                  className="flex justify-between items-center text-sm p-2 bg-card/30 rounded"
                                 >
                                   <div>
-                                    <span className="text-slate-300">{exp.type}</span>
-                                    <span className="text-slate-500 ml-2">({exp.format})</span>
+                                    <span className="text-muted-foreground">{exp.type}</span>
+                                    <span className="text-muted-foreground ml-2">({exp.format})</span>
                                   </div>
-                                  <span className="text-slate-400">{formatDate(exp.exportDate).split(",")[0]}</span>
+                                  <span className="text-muted-foreground">{formatDate(exp.exportDate).split(",")[0]}</span>
                                 </div>
                               ))}
                             </div>
                             <Button
                               variant="outline"
                               size="sm"
-                              className="w-full border-slate-600 text-slate-300 hover:text-white bg-transparent"
+                              className="w-full border-border text-muted-foreground hover:text-foreground bg-transparent"
                               onClick={() => {
                                 // Switch to history tab
                                 const historyTab = document.querySelector('[value="history"]') as HTMLElement
@@ -1804,20 +1800,20 @@ export default function DashboardPage() {
 
                 {/* Export History Tab */}
                 <TabsContent value="history" className="space-y-6">
-                  <Card className="bg-slate-900/50 border-slate-700">
+                  <Card className="bg-background/80 border-border">
                     <CardHeader>
                       <div className="flex items-center justify-between">
                         <div>
-                          <CardTitle className="flex items-center gap-2 text-white">
-                            <Activity className="h-5 w-5 text-blue-400" />
+                          <CardTitle className="flex items-center gap-2 text-foreground">
+                            <Activity className="h-5 w-5 text-primary" />
                             Export History
                           </CardTitle>
-                          <CardDescription className="text-slate-400">
+                          <CardDescription className="text-muted-foreground">
                             Track and manage all your exported files
                           </CardDescription>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Badge variant="outline" className="border-slate-600 text-slate-400">
+                          <Badge variant="outline" className="border-border text-muted-foreground">
                             {exportHistory.length} exports
                           </Badge>
                           {selectedExports.length > 0 && (
@@ -1836,15 +1832,15 @@ export default function DashboardPage() {
                             placeholder="Search exports by filename or type..."
                             value={exportFilter}
                             onChange={(e) => setExportFilter(e.target.value)}
-                            className="bg-slate-800 border-slate-600 text-white placeholder:text-slate-500 focus:border-blue-500"
+                            className="bg-card border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary"
                           />
                         </div>
                         <div className="flex gap-2">
                           <Select value={exportTypeFilter} onValueChange={setExportTypeFilter}>
-                            <SelectTrigger className="w-40 bg-slate-800 border-slate-600 text-white">
+                            <SelectTrigger className="w-40 bg-card border-border text-foreground">
                               <SelectValue placeholder="All Types" />
                             </SelectTrigger>
-                            <SelectContent className="bg-slate-800 border-slate-600">
+                            <SelectContent className="bg-card border-border">
                               <SelectItem value="all">All Types</SelectItem>
                               <SelectItem value="Blocked IPs">Blocked IPs</SelectItem>
                               <SelectItem value="Security Report">Security Report</SelectItem>
@@ -1855,13 +1851,13 @@ export default function DashboardPage() {
 
                       {/* Bulk Actions */}
                       {exportHistory.length > 0 && (
-                        <div className="flex items-center justify-between p-4 bg-slate-800/30 rounded-lg border border-slate-600">
+                        <div className="flex items-center justify-between p-4 bg-card/30 rounded-lg border border-border">
                           <div className="flex items-center gap-4">
                             <Button
                               size="sm"
                               variant="outline"
                               onClick={selectAllExports}
-                              className="border-slate-600 text-slate-300 hover:text-white bg-transparent"
+                              className="border-border text-muted-foreground hover:text-foreground bg-transparent"
                             >
                               Select All ({getFilteredExports().length})
                             </Button>
@@ -1870,7 +1866,7 @@ export default function DashboardPage() {
                                 size="sm"
                                 variant="outline"
                                 onClick={() => setSelectedExports([])}
-                                className="border-slate-600 text-slate-300 hover:text-white"
+                                className="border-border text-muted-foreground hover:text-foreground"
                               >
                                 Clear Selection
                               </Button>
@@ -1895,11 +1891,11 @@ export default function DashboardPage() {
                       )}
 
                       {/* Export History Table */}
-                      <div className="border border-slate-600 rounded-lg overflow-hidden">
+                      <div className="border border-border rounded-lg overflow-hidden">
                         <Table>
                           <TableHeader>
-                            <TableRow className="border-slate-600 hover:bg-slate-800/50">
-                              <TableHead className="w-12 text-slate-400">
+                            <TableRow className="border-border hover:bg-card/50">
+                              <TableHead className="w-12 text-muted-foreground">
                                 <input
                                   type="checkbox"
                                   checked={
@@ -1913,22 +1909,22 @@ export default function DashboardPage() {
                                       setSelectedExports([])
                                     }
                                   }}
-                                  className="rounded border-slate-600 bg-slate-800"
+                                  className="rounded border-border bg-card"
                                 />
                               </TableHead>
-                              <TableHead className="text-slate-400">File</TableHead>
-                              <TableHead className="text-slate-400">Type</TableHead>
-                              <TableHead className="text-slate-400">Format</TableHead>
-                              <TableHead className="text-slate-400">Size</TableHead>
-                              <TableHead className="text-slate-400">Records</TableHead>
-                              <TableHead className="text-slate-400">Date</TableHead>
-                              <TableHead className="text-slate-400">Actions</TableHead>
+                              <TableHead className="text-muted-foreground">File</TableHead>
+                              <TableHead className="text-muted-foreground">Type</TableHead>
+                              <TableHead className="text-muted-foreground">Format</TableHead>
+                              <TableHead className="text-muted-foreground">Size</TableHead>
+                              <TableHead className="text-muted-foreground">Records</TableHead>
+                              <TableHead className="text-muted-foreground">Date</TableHead>
+                              <TableHead className="text-muted-foreground">Actions</TableHead>
                             </TableRow>
                           </TableHeader>
                           <TableBody>
                             {getFilteredExports().length === 0 ? (
                               <TableRow>
-                                <TableCell colSpan={8} className="text-center py-8 text-slate-400">
+                                <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
                                   {exportHistory.length === 0 ? (
                                     <div className="space-y-2">
                                       <Download className="h-8 w-8 mx-auto text-slate-600" />
@@ -1946,18 +1942,18 @@ export default function DashboardPage() {
                               </TableRow>
                             ) : (
                               getFilteredExports().map((exp) => (
-                                <TableRow key={exp.filename} className="border-slate-600 hover:bg-slate-800/30">
+                                <TableRow key={exp.filename} className="border-border hover:bg-card/30">
                                   <TableCell>
                                     <input
                                       type="checkbox"
                                       checked={selectedExports.includes(exp.filename)}
                                       onChange={() => toggleExportSelection(exp.filename)}
-                                      className="rounded border-slate-600 bg-slate-800"
+                                      className="rounded border-border bg-card"
                                     />
                                   </TableCell>
                                   <TableCell>
                                     <div className="space-y-1">
-                                      <div className="font-mono text-sm text-white truncate max-w-48">
+                                      <div className="font-mono text-sm text-foreground truncate max-w-48">
                                         {exp.filename}
                                       </div>
                                       <div className="flex items-center gap-2">
@@ -1976,32 +1972,32 @@ export default function DashboardPage() {
                                     </div>
                                   </TableCell>
                                   <TableCell>
-                                    <Badge variant="outline" className="border-slate-600 text-slate-300">
+                                    <Badge variant="outline" className="border-border text-muted-foreground">
                                       {exp.type}
                                     </Badge>
                                   </TableCell>
                                   <TableCell>
                                     <Badge
                                       variant="outline"
-                                      className={`border-slate-600 ${
+                                      className={`border-border ${
                                         exp.format === "CSV"
                                           ? "text-green-400 border-green-500/50"
-                                          : "text-blue-400 border-blue-500/50"
+                                          : "text-primary border-primary/50"
                                       }`}
                                     >
                                       {exp.format}
                                     </Badge>
                                   </TableCell>
-                                  <TableCell className="text-slate-300">{exp.size}</TableCell>
-                                  <TableCell className="text-slate-300">{exp.records.toLocaleString()}</TableCell>
-                                  <TableCell className="text-slate-400 text-sm">{formatDate(exp.exportDate)}</TableCell>
+                                  <TableCell className="text-muted-foreground">{exp.size}</TableCell>
+                                  <TableCell className="text-muted-foreground">{exp.records.toLocaleString()}</TableCell>
+                                  <TableCell className="text-muted-foreground text-sm">{formatDate(exp.exportDate)}</TableCell>
                                   <TableCell>
                                     <div className="flex items-center gap-2">
                                       <Button
                                         size="sm"
                                         variant="ghost"
                                         onClick={() => downloadExportFile(exp.filename)}
-                                        className="text-slate-400 hover:text-white"
+                                        className="text-muted-foreground hover:text-foreground"
                                       >
                                         <Download className="h-4 w-4" />
                                       </Button>
@@ -2025,27 +2021,27 @@ export default function DashboardPage() {
                       {/* Export Statistics */}
                       {exportHistory.length > 0 && (
                         <div className="grid gap-4 md:grid-cols-4">
-                          <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                            <div className="text-2xl font-bold text-white">{exportHistory.length}</div>
-                            <div className="text-sm text-slate-400">Total Exports</div>
+                          <div className="p-4 bg-card/50 rounded-lg border border-border">
+                            <div className="text-2xl font-bold text-foreground">{exportHistory.length}</div>
+                            <div className="text-sm text-muted-foreground">Total Exports</div>
                           </div>
-                          <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                            <div className="text-2xl font-bold text-white">
+                          <div className="p-4 bg-card/50 rounded-lg border border-border">
+                            <div className="text-2xl font-bold text-foreground">
                               {exportHistory.filter((exp) => exp.format === "CSV").length}
                             </div>
-                            <div className="text-sm text-slate-400">CSV Files</div>
+                            <div className="text-sm text-muted-foreground">CSV Files</div>
                           </div>
-                          <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                            <div className="text-2xl font-bold text-white">
+                          <div className="p-4 bg-card/50 rounded-lg border border-border">
+                            <div className="text-2xl font-bold text-foreground">
                               {exportHistory.filter((exp) => exp.format === "JSON").length}
                             </div>
-                            <div className="text-sm text-slate-400">JSON Files</div>
+                            <div className="text-sm text-muted-foreground">JSON Files</div>
                           </div>
-                          <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                            <div className="text-2xl font-bold text-white">
+                          <div className="p-4 bg-card/50 rounded-lg border border-border">
+                            <div className="text-2xl font-bold text-foreground">
                               {exportHistory.filter((exp) => exp.type === "Blocked IPs").length}
                             </div>
-                            <div className="text-sm text-slate-400">IP Exports</div>
+                            <div className="text-sm text-muted-foreground">IP Exports</div>
                           </div>
                         </div>
                       )}
@@ -2057,40 +2053,40 @@ export default function DashboardPage() {
 
             <TabsContent value="details" className="space-y-6">
               {/* Analyzed / Monitored IPs */}
-              <Card className="bg-slate-900/50 border-slate-700 mb-8">
+              <Card className="bg-background/80 border-border mb-8">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-white">
-                    <Eye className="h-5 w-5 text-blue-400" />
+                  <CardTitle className="flex items-center gap-2 text-foreground">
+                    <Eye className="h-5 w-5 text-primary" />
                     Analyzed / Monitored IPs
                   </CardTitle>
-                  <CardDescription className="text-slate-400">
+                  <CardDescription className="text-muted-foreground">
                     A list of all unique IP addresses that have interacted with your server
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="overflow-x-auto rounded-lg border border-slate-700">
+                  <div className="overflow-x-auto rounded-lg border border-border">
                     <Table>
-                      <TableHeader className="bg-slate-800">
-                        <TableRow className="border-slate-700">
-                          <TableHead className="text-slate-400">IP Address</TableHead>
-                          <TableHead className="text-slate-400">Last Seen</TableHead>
-                          <TableHead className="text-slate-400">Total Requests</TableHead>
+                      <TableHeader className="bg-card">
+                        <TableRow className="border-border">
+                          <TableHead className="text-muted-foreground">IP Address</TableHead>
+                          <TableHead className="text-muted-foreground">Last Seen</TableHead>
+                          <TableHead className="text-muted-foreground">Total Requests</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {monitoredIPs.length === 0 ? (
-                          <TableRow className="border-slate-700 border-b-0">
-                            <TableCell colSpan={3} className="text-center text-slate-500 py-6">
+                          <TableRow className="border-border border-b-0">
+                            <TableCell colSpan={3} className="text-center text-muted-foreground py-6">
                               No IPs analyzed yet.
                             </TableCell>
                           </TableRow>
                         ) : (
                           monitoredIPs.map((ip, index) => (
-                            <TableRow key={index} className="border-slate-700 border-b-0 hover:bg-slate-800/50">
-                              <TableCell className="font-mono text-white">{ip.ip}</TableCell>
-                              <TableCell className="text-slate-300">{new Date(ip.lastSeen).toLocaleString()}</TableCell>
+                            <TableRow key={index} className="border-border border-b-0 hover:bg-card/50">
+                              <TableCell className="font-mono text-foreground">{ip.ip}</TableCell>
+                              <TableCell className="text-muted-foreground">{new Date(ip.lastSeen).toLocaleString()}</TableCell>
                               <TableCell>
-                                <Badge variant="secondary" className="bg-slate-700 text-slate-300">
+                                <Badge variant="secondary" className="bg-slate-700 text-muted-foreground">
                                   {ip.requestCount}
                                 </Badge>
                               </TableCell>
@@ -2105,53 +2101,53 @@ export default function DashboardPage() {
 
               <div className="grid gap-6">
                 {/* IP Address Types */}
-                <Card className="bg-slate-900/50 border-slate-700">
+                <Card className="bg-background/80 border-border">
                   <CardHeader>
-                    <CardTitle className="text-white">All Types of IP Addresses</CardTitle>
-                    <CardDescription className="text-slate-400">
+                    <CardTitle className="text-foreground">All Types of IP Addresses</CardTitle>
+                    <CardDescription className="text-muted-foreground">
                       Comprehensive overview of different IP address classifications
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-3">
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">IPv4 Addresses</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">IPv4 Addresses</h4>
+                        <p className="text-sm text-muted-foreground">
                           32-bit address format (e.g., 192.168.1.1). Most common IP version supporting approximately 4.3
                           billion addresses. Still widely used in most networks.
                         </p>
                       </div>
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">IPv6 Addresses</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">IPv6 Addresses</h4>
+                        <p className="text-sm text-muted-foreground">
                           128-bit address format (e.g., 2001:0db8::1). Next-generation protocol supporting virtually
                           unlimited addresses. Essential for future internet growth.
                         </p>
                       </div>
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">Public IP Addresses</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">Public IP Addresses</h4>
+                        <p className="text-sm text-muted-foreground">
                           Globally unique addresses assigned by ISPs. Publicly routable on the internet. Used for
                           internet-facing services and external communication.
                         </p>
                       </div>
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">Private IP Addresses</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">Private IP Addresses</h4>
+                        <p className="text-sm text-muted-foreground">
                           Reserved ranges (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16). Not routable on the internet.
                           Used exclusively in private networks and behind NAT.
                         </p>
                       </div>
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">Static IP Addresses</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">Static IP Addresses</h4>
+                        <p className="text-sm text-muted-foreground">
                           Permanent, manually configured IP addresses. Do not change unless manually modified. Ideal for
                           servers and devices requiring consistent addresses.
                         </p>
                       </div>
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">Dynamic IP Addresses</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">Dynamic IP Addresses</h4>
+                        <p className="text-sm text-muted-foreground">
                           Temporary addresses assigned by DHCP servers. Change periodically or when reconnecting. Common
                           for consumer internet connections.
                         </p>
@@ -2161,53 +2157,53 @@ export default function DashboardPage() {
                 </Card>
 
                 {/* Network Types */}
-                <Card className="bg-slate-900/50 border-slate-700">
+                <Card className="bg-background/80 border-border">
                   <CardHeader>
-                    <CardTitle className="text-white">All Types of Networks</CardTitle>
-                    <CardDescription className="text-slate-400">
+                    <CardTitle className="text-foreground">All Types of Networks</CardTitle>
+                    <CardDescription className="text-muted-foreground">
                       Overview of various network classifications and their characteristics
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-3">
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">Local Area Network (LAN)</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">Local Area Network (LAN)</h4>
+                        <p className="text-sm text-muted-foreground">
                           Computers connected within a limited geographic area (office, home). Typically uses private IP
                           addresses. Provides fast data transfer speeds.
                         </p>
                       </div>
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">Wide Area Network (WAN)</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">Wide Area Network (WAN)</h4>
+                        <p className="text-sm text-muted-foreground">
                           Geographically dispersed networks connected via public networks. Connects multiple LANs across
                           cities or countries. Usually slower than LANs.
                         </p>
                       </div>
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">Metropolitan Area Network (MAN)</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">Metropolitan Area Network (MAN)</h4>
+                        <p className="text-sm text-muted-foreground">
                           Networks spanning a metropolitan area or large campus. Larger than LANs but smaller than WANs.
                           Intermediate performance characteristics.
                         </p>
                       </div>
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">Virtual Private Network (VPN)</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">Virtual Private Network (VPN)</h4>
+                        <p className="text-sm text-muted-foreground">
                           Encrypted connection over public networks. Provides privacy and security. Used for secure
                           remote access and data protection.
                         </p>
                       </div>
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">Wireless Network (WiFi)</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">Wireless Network (WiFi)</h4>
+                        <p className="text-sm text-muted-foreground">
                           Networks using wireless transmission instead of cables. Provides mobility and flexibility.
                           Requires proper security measures.
                         </p>
                       </div>
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">Cloud Networks</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">Cloud Networks</h4>
+                        <p className="text-sm text-muted-foreground">
                           Infrastructure distributed across multiple servers and data centers. Provides scalability and
                           redundancy. Often accessed via the internet.
                         </p>
@@ -2217,46 +2213,46 @@ export default function DashboardPage() {
                 </Card>
 
                 {/* IP Analysis Techniques */}
-                <Card className="bg-slate-900/50 border-slate-700">
+                <Card className="bg-background/80 border-border">
                   <CardHeader>
-                    <CardTitle className="text-white">IP Analysis Techniques</CardTitle>
-                    <CardDescription className="text-slate-400">
+                    <CardTitle className="text-foreground">IP Analysis Techniques</CardTitle>
+                    <CardDescription className="text-muted-foreground">
                       Basic information about methods used for IP address analysis
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-3">
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">Geolocation Analysis</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">Geolocation Analysis</h4>
+                        <p className="text-sm text-muted-foreground">
                           Determines geographic location of IP addresses using databases. Identifies country, region,
                           and city information. Useful for security and compliance.
                         </p>
                       </div>
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">ISP Detection</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">ISP Detection</h4>
+                        <p className="text-sm text-muted-foreground">
                           Identifies Internet Service Provider and hosting provider information. Helps identify data
                           center IPs and commercial networks. Important for security policies.
                         </p>
                       </div>
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">WHOIS Lookup</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">WHOIS Lookup</h4>
+                        <p className="text-sm text-muted-foreground">
                           Public database query containing IP registration information. Provides ownership and
                           administrative contact details. Key tool for IP investigation.
                         </p>
                       </div>
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">DNS Resolution</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">DNS Resolution</h4>
+                        <p className="text-sm text-muted-foreground">
                           Converts IP addresses to domain names and vice versa. Reveals associated hostnames and
                           services. Useful for identifying server infrastructure.
                         </p>
                       </div>
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">Reputation Scoring</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">Reputation Scoring</h4>
+                        <p className="text-sm text-muted-foreground">
                           Evaluates IP trustworthiness based on threat intelligence. Checks against known malicious IP
                           lists. Helps identify potentially dangerous sources.
                         </p>
@@ -2266,46 +2262,46 @@ export default function DashboardPage() {
                 </Card>
 
                 {/* IP Blocking Techniques */}
-                <Card className="bg-slate-900/50 border-slate-700">
+                <Card className="bg-background/80 border-border">
                   <CardHeader>
-                    <CardTitle className="text-white">IP Blocking Techniques</CardTitle>
-                    <CardDescription className="text-slate-400">
+                    <CardTitle className="text-foreground">IP Blocking Techniques</CardTitle>
+                    <CardDescription className="text-muted-foreground">
                       Basic information about methods used for IP blocking and access control
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-3">
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">Firewall Rules</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">Firewall Rules</h4>
+                        <p className="text-sm text-muted-foreground">
                           Network-level filtering using firewall configurations. Blocks traffic at the network
                           perimeter. Most common and effective blocking method.
                         </p>
                       </div>
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">Web Application Filtering</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">Web Application Filtering</h4>
+                        <p className="text-sm text-muted-foreground">
                           Application-level IP blocking implemented in web servers. Provides granular control per
                           application. Can log and alert on blocked requests.
                         </p>
                       </div>
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">Geographic Blocking (Geo-blocking)</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">Geographic Blocking (Geo-blocking)</h4>
+                        <p className="text-sm text-muted-foreground">
                           Blocks IP addresses from specific geographic regions. Uses geolocation databases. Enforces
                           regional compliance and content restrictions.
                         </p>
                       </div>
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">Rate Limiting</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">Rate Limiting</h4>
+                        <p className="text-sm text-muted-foreground">
                           Restricts requests from specific IPs to prevent abuse. Blocks IPs making excessive requests.
                           Protects against DDoS and brute-force attacks.
                         </p>
                       </div>
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">Blacklist/Whitelist</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">Blacklist/Whitelist</h4>
+                        <p className="text-sm text-muted-foreground">
                           Maintains lists of blocked (blacklist) or allowed (whitelist) IPs. Simple and direct approach.
                           Requires regular maintenance and updates.
                         </p>
@@ -2315,46 +2311,46 @@ export default function DashboardPage() {
                 </Card>
 
                 {/* IP Generation Techniques */}
-                <Card className="bg-slate-900/50 border-slate-700">
+                <Card className="bg-background/80 border-border">
                   <CardHeader>
-                    <CardTitle className="text-white">IP Generation Techniques</CardTitle>
-                    <CardDescription className="text-slate-400">
+                    <CardTitle className="text-foreground">IP Generation Techniques</CardTitle>
+                    <CardDescription className="text-muted-foreground">
                       Basic information about methods used for IP address generation and assignment
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-3">
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">DHCP (Dynamic Host Configuration Protocol)</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">DHCP (Dynamic Host Configuration Protocol)</h4>
+                        <p className="text-sm text-muted-foreground">
                           Automatically assigns IP addresses to devices on a network. Manages IP pools and lease times.
                           Most common method for dynamic IP assignment.
                         </p>
                       </div>
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">Static Assignment</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">Static Assignment</h4>
+                        <p className="text-sm text-muted-foreground">
                           Manual configuration of IP addresses on devices. Requires administrator intervention. Ensures
                           consistent address for specific devices.
                         </p>
                       </div>
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">IP Pools</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">IP Pools</h4>
+                        <p className="text-sm text-muted-foreground">
                           Reserved ranges of addresses for automatic distribution. Prevents address conflicts and
                           exhaustion. Used by ISPs and large organizations.
                         </p>
                       </div>
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">NAT (Network Address Translation)</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">NAT (Network Address Translation)</h4>
+                        <p className="text-sm text-muted-foreground">
                           Maps private IP addresses to public IPs for internet communication. Conserves public IP
                           resources. Enables private network access to internet.
                         </p>
                       </div>
-                      <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-600">
-                        <h4 className="font-semibold text-white mb-2">IPv6 Link-Local Addresses</h4>
-                        <p className="text-sm text-slate-400">
+                      <div className="p-4 bg-card/50 rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">IPv6 Link-Local Addresses</h4>
+                        <p className="text-sm text-muted-foreground">
                           Auto-generated addresses for local network communication. Created without manual
                           configuration. Enables plug-and-play networking capabilities.
                         </p>

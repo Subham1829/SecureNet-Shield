@@ -87,19 +87,19 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
       {/* Background Effects */}
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10" />
+      <div className="absolute inset-0 bg-primary/5" />
       
-      <Card className="w-full max-w-md bg-slate-900/90 border-slate-700 shadow-2xl backdrop-blur-sm relative z-10">
+      <Card className="w-full max-w-md bg-background/90 border-border shadow-2xl backdrop-blur-sm relative z-10">
         <CardHeader className="text-center space-y-4">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg">
-            <Shield className="h-8 w-8 text-white" />
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary shadow-lg">
+            <Shield className="h-8 w-8 text-foreground" />
           </div>
           <div>
-            <CardTitle className="text-3xl font-bold text-white">Log In</CardTitle>
-            <CardDescription className="text-slate-400 mt-2">
+            <CardTitle className="text-3xl font-bold text-foreground">Log In</CardTitle>
+            <CardDescription className="text-muted-foreground mt-2">
               Welcome back to IP Guardian
             </CardDescription>
           </div>
@@ -121,14 +121,14 @@ export default function LoginPage() {
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="login-email" className="text-slate-300">Email</Label>
+              <Label htmlFor="login-email" className="text-muted-foreground">Email</Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
+                <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="login-email"
                   type="email"
                   placeholder="Enter your email"
-                  className={`pl-10 bg-slate-800 border-slate-600 text-white placeholder:text-slate-500 focus:border-blue-500 ${errors.email ? 'border-red-500' : ''}`}
+                  className={`pl-10 bg-card border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary ${errors.email ? 'border-red-500' : ''}`}
                   value={loginData.email}
                   onChange={(e) => setLoginData({...loginData, email: e.target.value})}
                 />
@@ -142,14 +142,14 @@ export default function LoginPage() {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="login-password" className="text-slate-300">Password</Label>
+              <Label htmlFor="login-password" className="text-muted-foreground">Password</Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
+                <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="login-password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
-                  className={`pl-10 pr-10 bg-slate-800 border-slate-600 text-white placeholder:text-slate-500 focus:border-blue-500 ${errors.password ? 'border-red-500' : ''}`}
+                  className={`pl-10 pr-10 bg-card border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary ${errors.password ? 'border-red-500' : ''}`}
                   value={loginData.password}
                   onChange={(e) => setLoginData({...loginData, password: e.target.value})}
                 />
@@ -157,7 +157,7 @@ export default function LoginPage() {
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-slate-500 hover:text-slate-300"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground hover:text-muted-foreground"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -177,18 +177,18 @@ export default function LoginPage() {
                   id="remember" 
                   checked={loginData.rememberMe}
                   onCheckedChange={(checked) => setLoginData({...loginData, rememberMe: checked as boolean})}
-                  className="border-slate-600 data-[state=checked]:bg-blue-600"
+                  className="border-border data-[state=checked]:bg-primary"
                 />
-                <Label htmlFor="remember" className="text-sm text-slate-300">Remember me</Label>
+                <Label htmlFor="remember" className="text-sm text-muted-foreground">Remember me</Label>
               </div>
-              <Link href="#" className="text-sm text-blue-400 hover:text-blue-300 hover:underline">
+              <Link href="#" className="text-sm text-primary hover:text-primary/80 hover:underline">
                 Forgot password?
               </Link>
             </div>
             
             <Button 
               type="submit" 
-              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium" 
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-foreground font-medium" 
               disabled={isLoading}
             >
               {isLoading ? (
@@ -201,9 +201,9 @@ export default function LoginPage() {
               )}
             </Button>
 
-            <div className="text-center mt-4 text-sm text-slate-400">
+            <div className="text-center mt-4 text-sm text-muted-foreground">
               Don't have an account?{" "}
-              <Link href="/register" className="text-blue-400 hover:text-blue-300 hover:underline">
+              <Link href="/register" className="text-primary hover:text-primary/80 hover:underline">
                 Sign up
               </Link>
             </div>

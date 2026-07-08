@@ -116,19 +116,19 @@ export default function VerifyOTPPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
       {/* Background Effects */}
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10" />
+      <div className="absolute inset-0 bg-primary/5" />
       
-      <Card className="w-full max-w-md bg-slate-900/90 border-slate-700 shadow-2xl backdrop-blur-sm relative z-10">
+      <Card className="w-full max-w-md bg-background/90 border-border shadow-2xl backdrop-blur-sm relative z-10">
         <CardHeader className="text-center space-y-4">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg">
-            <Shield className="h-8 w-8 text-white" />
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary shadow-lg">
+            <Shield className="h-8 w-8 text-foreground" />
           </div>
           <div>
-            <CardTitle className="text-3xl font-bold text-white">Verify Login</CardTitle>
-            <CardDescription className="text-slate-400 mt-2">
+            <CardTitle className="text-3xl font-bold text-foreground">Verify Login</CardTitle>
+            <CardDescription className="text-muted-foreground mt-2">
               {email ? `Enter the 6-digit code sent to ${email}` : "Enter your verification code"}
             </CardDescription>
           </div>
@@ -150,14 +150,14 @@ export default function VerifyOTPPage() {
 
           <form onSubmit={handleVerifyOTP} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="otp" className="text-slate-300">Verification Code</Label>
+              <Label htmlFor="otp" className="text-muted-foreground">Verification Code</Label>
               <div className="relative">
-                <Key className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
+                <Key className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="otp"
                   type="text"
                   placeholder="Enter 6-digit code"
-                  className="pl-10 bg-slate-800 border-slate-600 text-white placeholder:text-slate-500 focus:border-blue-500 text-center tracking-widest text-lg"
+                  className="pl-10 bg-card border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary text-center tracking-widest text-lg"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
                   maxLength={6}
@@ -165,7 +165,7 @@ export default function VerifyOTPPage() {
                 />
               </div>
               {countdown > 0 && (
-                <p className="text-xs text-slate-400 text-right mt-1">
+                <p className="text-xs text-muted-foreground text-right mt-1">
                   Code expires in {countdown}s
                 </p>
               )}
@@ -173,7 +173,7 @@ export default function VerifyOTPPage() {
 
             <Button 
               type="submit" 
-              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium" 
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-foreground font-medium" 
               disabled={isLoading || !email}
             >
               {isLoading ? (
@@ -186,13 +186,13 @@ export default function VerifyOTPPage() {
               )}
             </Button>
 
-            <div className="text-center mt-4 text-sm text-slate-400">
+            <div className="text-center mt-4 text-sm text-muted-foreground">
               Didn't receive the code?{" "}
               <button 
                 type="button"
                 onClick={handleResendOTP}
                 disabled={isLoading || countdown > 0 || !email}
-                className="text-blue-400 hover:text-blue-300 hover:underline disabled:opacity-50"
+                className="text-primary hover:text-primary/80 hover:underline disabled:opacity-50"
               >
                 {countdown > 0 ? `Resend available in ${countdown}s` : "Resend OTP"}
               </button>

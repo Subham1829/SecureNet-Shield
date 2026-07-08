@@ -128,19 +128,19 @@ export default function RegisterPage() {
   const passwordValidation = validatePassword(signupData.password)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
       {/* Background Effects */}
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10" />
+      <div className="absolute inset-0 bg-primary/5" />
       
-      <Card className="w-full max-w-md bg-slate-900/90 border-slate-700 shadow-2xl backdrop-blur-sm relative z-10">
+      <Card className="w-full max-w-md bg-background/90 border-border shadow-2xl backdrop-blur-sm relative z-10">
         <CardHeader className="text-center space-y-4">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg">
-            <Shield className="h-8 w-8 text-white" />
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary shadow-lg">
+            <Shield className="h-8 w-8 text-foreground" />
           </div>
           <div>
-            <CardTitle className="text-3xl font-bold text-white">Create Account</CardTitle>
-            <CardDescription className="text-slate-400 mt-2">
+            <CardTitle className="text-3xl font-bold text-foreground">Create Account</CardTitle>
+            <CardDescription className="text-muted-foreground mt-2">
               Join IP Guardian to secure your network
             </CardDescription>
           </div>
@@ -162,14 +162,14 @@ export default function RegisterPage() {
 
           <form onSubmit={handleSignup} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="fullname" className="text-slate-300">Full Name</Label>
+              <Label htmlFor="fullname" className="text-muted-foreground">Full Name</Label>
               <div className="relative">
-                <User className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
+                <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="fullname"
                   type="text"
                   placeholder="Enter your full name"
-                  className={`pl-10 bg-slate-800 border-slate-600 text-white placeholder:text-slate-500 focus:border-blue-500 ${errors.fullName ? 'border-red-500' : ''}`}
+                  className={`pl-10 bg-card border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary ${errors.fullName ? 'border-red-500' : ''}`}
                   value={signupData.fullName}
                   onChange={(e) => setSignupData({...signupData, fullName: e.target.value})}
                 />
@@ -183,14 +183,14 @@ export default function RegisterPage() {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="signup-email" className="text-slate-300">Email</Label>
+              <Label htmlFor="signup-email" className="text-muted-foreground">Email</Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
+                <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="signup-email"
                   type="email"
                   placeholder="Enter your email"
-                  className={`pl-10 bg-slate-800 border-slate-600 text-white placeholder:text-slate-500 focus:border-blue-500 ${errors.email ? 'border-red-500' : ''}`}
+                  className={`pl-10 bg-card border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary ${errors.email ? 'border-red-500' : ''}`}
                   value={signupData.email}
                   onChange={(e) => setSignupData({...signupData, email: e.target.value})}
                 />
@@ -204,14 +204,14 @@ export default function RegisterPage() {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="signup-password" className="text-slate-300">Password</Label>
+              <Label htmlFor="signup-password" className="text-muted-foreground">Password</Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
+                <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="signup-password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Create a strong password"
-                  className={`pl-10 pr-10 bg-slate-800 border-slate-600 text-white placeholder:text-slate-500 focus:border-blue-500 ${errors.password ? 'border-red-500' : ''}`}
+                  className={`pl-10 pr-10 bg-card border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary ${errors.password ? 'border-red-500' : ''}`}
                   value={signupData.password}
                   onChange={(e) => setSignupData({...signupData, password: e.target.value})}
                 />
@@ -219,7 +219,7 @@ export default function RegisterPage() {
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-slate-500 hover:text-slate-300"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground hover:text-muted-foreground"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -229,7 +229,7 @@ export default function RegisterPage() {
               {signupData.password && (
                 <div className="space-y-3">
                   <div className="flex justify-between text-xs">
-                    <span className="text-slate-400">Password strength</span>
+                    <span className="text-muted-foreground">Password strength</span>
                     <span className={
                       passwordStrength < 50 ? "text-red-400" :
                       passwordStrength < 75 ? "text-yellow-400" :
@@ -275,14 +275,14 @@ export default function RegisterPage() {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="confirm-password" className="text-slate-300">Confirm Password</Label>
+              <Label htmlFor="confirm-password" className="text-muted-foreground">Confirm Password</Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
+                <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="confirm-password"
                   type={showConfirmPassword ? "text" : "password"}
                   placeholder="Confirm your password"
-                  className={`pl-10 pr-10 bg-slate-800 border-slate-600 text-white placeholder:text-slate-500 focus:border-blue-500 ${errors.confirmPassword ? 'border-red-500' : ''}`}
+                  className={`pl-10 pr-10 bg-card border-border text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary ${errors.confirmPassword ? 'border-red-500' : ''}`}
                   value={signupData.confirmPassword}
                   onChange={(e) => setSignupData({...signupData, confirmPassword: e.target.value})}
                 />
@@ -290,7 +290,7 @@ export default function RegisterPage() {
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-slate-500 hover:text-slate-300"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-muted-foreground hover:text-muted-foreground"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 >
                   {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -306,7 +306,7 @@ export default function RegisterPage() {
             
             <Button 
               type="submit" 
-              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium" 
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-foreground font-medium" 
               disabled={isLoading}
             >
               {isLoading ? (
@@ -319,9 +319,9 @@ export default function RegisterPage() {
               )}
             </Button>
 
-            <div className="text-center mt-4 text-sm text-slate-400">
+            <div className="text-center mt-4 text-sm text-muted-foreground">
               Already have an account?{" "}
-              <Link href="/login" className="text-blue-400 hover:text-blue-300 hover:underline">
+              <Link href="/login" className="text-primary hover:text-primary/80 hover:underline">
                 Log in
               </Link>
             </div>
