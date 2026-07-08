@@ -1,6 +1,6 @@
 import { Router } from "express"
 import { loginRateLimiter } from "../middlewares/rate-limiters.middleware.js"
-import { registerUser, loginUser, logoutUser, verifyOTP, resendOTP } from "../controllers/auth.controller.js"
+import { registerUser, loginUser, logoutUser, verifyOTP, resendOTP, forgotPassword, resetPassword } from "../controllers/auth.controller.js"
 
 const router = Router()
 
@@ -16,5 +16,9 @@ router.post("/logout", logoutUser)
 // OTP endpoints
 router.post("/verify-otp", verifyOTP)
 router.post("/resend-otp", resendOTP)
+
+// Password reset endpoints
+router.post("/forgot-password", forgotPassword)
+router.post("/reset-password", resetPassword)
 
 export { router as authRoutes }

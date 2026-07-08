@@ -179,10 +179,12 @@ export default function LoginPage() {
                   onCheckedChange={(checked) => setLoginData({...loginData, rememberMe: checked as boolean})}
                   className="border-border data-[state=checked]:bg-primary"
                 />
-                <Label htmlFor="remember" className="text-sm text-muted-foreground">Remember me</Label>
+                <Label htmlFor="remember" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-muted-foreground">
+                  Remember me
+                </Label>
               </div>
-              <Link href="#" className="text-sm text-primary hover:text-primary/80 hover:underline">
-                Forgot password?
+              <Link href="/forgot-password" className="text-sm text-primary hover:underline font-medium">
+                Forgot Password?
               </Link>
             </div>
             
