@@ -43,7 +43,12 @@ export default function FeedbackPage() {
 
   const fetchReviews = async () => {
     try {
-      const res = await fetch(`${apiUrl}/api/feedback`)
+      const token = localStorage.getItem("token")
+      const res = await fetch(`${apiUrl}/api/feedback`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
       if (res.ok) {
         const data = await res.json()
         setReviews(data)
@@ -60,15 +65,18 @@ export default function FeedbackPage() {
   const handleSubmit = async () => {
     try {
       setLoading(true)
+      const token = localStorage.getItem("token")
       const res = await fetch(`${apiUrl}/api/feedback`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify({
           rating,
           comment: feedback,
           category,
           anonymous,
-          username: "User",
         })
       })
 

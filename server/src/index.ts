@@ -8,6 +8,7 @@ import { getAllowedOrigins } from "./lib/cors.js"
 import exportsRouter from "./routes/exports.js"
 import blockedIpsRouter from "./routes/blocked-ips.routes.js"
 import { statsRouter } from "./routes/stats.routes.js"
+import { logsRouter } from "./routes/logs.routes.js"
 import { blockedCheckMiddleware } from "./middlewares/blocked-check.middleware.js"
 import { globalRateLimiter } from "./middlewares/rate-limiters.middleware.js"
 import { globalErrorHandler } from "./middlewares/error.middleware.js"
@@ -56,6 +57,7 @@ import { userRoutes } from "./routes/user.routes.js"
 app.use("/api/exports", exportsRouter)
 app.use("/api/blocked-ips", blockedIpsRouter)
 app.use("/api/stats", statsRouter)
+app.use("/api/logs", logsRouter)
 app.use("/api/auth", authRoutes)
 app.use("/api/analyze", analysisRouter)
 app.use("/api/feedback", feedbackRouter)

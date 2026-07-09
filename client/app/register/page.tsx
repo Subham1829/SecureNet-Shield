@@ -109,13 +109,19 @@ export default function RegisterPage() {
       if (!response.ok) {
         setErrors({ form: data.error || data.message || "Registration failed" })
       } else {
-        if (data.token) {
+        if (data.requiresOTP) {
+          setSuccess("Account created successfully! Redirecting to OTP verification...")
+          sessionStorage.setItem("verifyEmail", signupData.email)
+          setTimeout(() => {
+            window.location.href = `/verify-otp?email=${encodeURIComponent(signupData.email)}`
+          }, 1500)
+        } else if (data.token) {
           localStorage.setItem("token", data.token)
+          setSuccess("Account created successfully! Redirecting to dashboard...")
+          setTimeout(() => {
+            window.location.href = "/dashboard"
+          }, 1500)
         }
-        setSuccess("Account created successfully! Redirecting to dashboard...")
-        setTimeout(() => {
-          window.location.href = "/dashboard"
-        }, 1500)
       }
     } catch (err) {
       setErrors({ form: "An unexpected error occurred" })

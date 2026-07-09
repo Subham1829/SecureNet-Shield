@@ -70,11 +70,11 @@ export default function ProxyDashboard() {
           </a>
           <a
             className="flex items-center gap-md px-md py-sm rounded-lg text-muted-foreground dark:text-muted-foreground hover:bg-accent transition-colors"
-            href="#"
+            href="/audit"
           >
-            <span className="material-symbols-outlined">settings</span>
+            <span className="material-symbols-outlined">history</span>
             <span className="font-medium uppercase tracking-wider text-xs">
-              Settings
+              Audit Logs
             </span>
           </a>
         </nav>

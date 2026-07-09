@@ -12,7 +12,6 @@ import {
   Ban,
   CheckCircle,
   AlertTriangle,
-  Settings,
   MessageSquare,
   LogOut,
   Menu,
@@ -603,9 +602,11 @@ export default function DashboardPage() {
               Feedback
             </Link>
           </Button>
-          <Button variant="ghost" className="justify-start text-muted-foreground hover:text-foreground hover:bg-card">
-            <Settings className="mr-3 h-4 w-4" />
-            Settings
+          <Button variant="ghost" className="justify-start text-muted-foreground hover:text-foreground hover:bg-card" asChild>
+            <Link href="/audit">
+              <FileText className="mr-3 h-4 w-4" />
+              Audit Logs
+            </Link>
           </Button>
         </nav>
       </div>

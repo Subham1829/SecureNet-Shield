@@ -1,5 +1,8 @@
-import { Router } from "express"
+import { Router, Request, Response } from "express"
 import { Feedback } from "../models/Feedback.js"
+import { authMiddleware } from "../middlewares/auth.middleware.js"
+import { validateRequest } from "../middlewares/validate.middleware.js"
+import { createFeedbackSchema } from "../validations/feedback.validation.js"
 
 export const feedbackRouter = Router()
 
@@ -15,13 +18,9 @@ feedbackRouter.get("/", async (req, res) => {
 })
 
 // POST /api/feedback
-feedbackRouter.post("/", async (req, res) => {
+feedbackRouter.post("/", authMiddleware, validateRequest(createFeedbackSchema), async (req: Request, res: Response) => {
   try {
     const { rating, comment, category, anonymous, username } = req.body
-
-    if (!rating || !comment || !category) {
-      return res.status(400).json({ error: "Missing required fields" })
-    }
 
     const newFeedback = await Feedback.create({
       rating,

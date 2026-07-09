@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Shield, Activity, MessageSquare, Settings, LogOut } from "lucide-react"
+import { Shield, Activity, MessageSquare, LogOut, FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { apiUrl } from "@/lib/api"
 
@@ -50,9 +50,9 @@ export function AppSidebar() {
             </Link>
           </Button>
           <Button variant="ghost" className="justify-start text-muted-foreground hover:text-foreground hover:bg-card" asChild>
-            <Link href="/settings">
-              <Settings className="mr-3 h-4 w-4" />
-              Settings
+            <Link href="/audit">
+              <FileText className="mr-3 h-4 w-4" />
+              Audit Logs
             </Link>
           </Button>
         </nav>
