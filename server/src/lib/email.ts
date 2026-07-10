@@ -1,4 +1,5 @@
-import nodemailer from "nodemailer"
+import nodemailer from "nodemailer";
+import { User } from "../models/User";
 
 // Configure Nodemailer to use Gmail
 const transporter = nodemailer.createTransport({
@@ -7,14 +8,19 @@ const transporter = nodemailer.createTransport({
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASSWORD,
   },
-})
+});
 
 
-export const sendPasswordResetEmail = async (to: string, resetLink: string) => {
+
+export interface EmailUser {
+  email: string;
+}
+
+export const sendPasswordResetEmail = async (user: EmailUser, resetLink: string) => {
   try {
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to,
+      to: user.email,
       subject: "Password Reset Request - IP Guardian",
       html: `
         <!DOCTYPE html>
@@ -54,12 +60,12 @@ export const sendPasswordResetEmail = async (to: string, resetLink: string) => {
         </body>
         </html>
       `,
-    }
+    };
 
-    const info = await transporter.sendMail(mailOptions)
-    console.log("Password Reset Email sent successfully: %s", info.messageId)
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Password Reset Email sent successfully: %s", info.messageId);
   } catch (error) {
-    console.error("Error sending Password Reset email:", error)
-    throw new Error("Failed to send reset email.")
+    console.error("Error sending Password Reset email:", error);
+    throw new Error("Failed to send reset email.");
   }
-}
+};

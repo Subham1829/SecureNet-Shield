@@ -101,9 +101,11 @@ export const logoutUser = catchAsync(async (req: Request, res: Response) => {
   await BlacklistedToken.findOneAndUpdate(
     { token },
     { token, expiresAt },
-    { upsert: true, new: true, setDefaultsOnInsert: true }
+    { upsert: true, new: true, setDefaultsOnInsert: true },
   );
-  return res.status(200).json({ success: true, message: 'Logged out successfully' });
+  return res
+    .status(200)
+    .json({ success: true, message: "Logged out successfully" });
 });
 
 export const forgotPassword = catchAsync(
@@ -139,7 +141,7 @@ export const forgotPassword = catchAsync(
     const clientUrl = process.env.CLIENT_URL || "http://localhost:3000";
     const resetLink = `${clientUrl}/reset-password?token=${resetToken}`;
 
-    await sendPasswordResetEmail(user.email, resetLink);
+    await sendPasswordResetEmail(user, resetLink);
 
     return res.status(200).json({ message: successMessage });
   },

@@ -109,13 +109,7 @@ export default function RegisterPage() {
       if (!response.ok) {
         setErrors({ form: data.error || data.message || "Registration failed" })
       } else {
-        if (data.requiresOTP) {
-          setSuccess("Account created successfully! Redirecting to OTP verification...")
-          sessionStorage.setItem("verifyEmail", signupData.email)
-          setTimeout(() => {
-            window.location.href = `/verify-otp?email=${encodeURIComponent(signupData.email)}`
-          }, 1500)
-        } else if (data.token) {
+        if (data.token) {
           localStorage.setItem("token", data.token)
           setSuccess("Account created successfully! Redirecting to dashboard...")
           setTimeout(() => {
