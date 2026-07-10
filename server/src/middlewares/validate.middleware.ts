@@ -12,11 +12,11 @@ export const validateRequest =
       return next()
     } catch (error) {
       if (error instanceof ZodError) {
-        const zodError = error as any
+        const issues = error.issues || (error as any).errors || []
         return res.status(400).json({
           error: "Validation failed",
-          details: zodError.errors.map((e: any) => ({
-            path: e.path.join("."),
+          details: issues.map((e: any) => ({
+            path: e.path ? e.path.join(".") : "unknown",
             message: e.message,
           })),
         })

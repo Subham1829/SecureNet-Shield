@@ -71,36 +71,48 @@ if (process.env.NODE_ENV === "production" && !process.env.MONGODB_URI) {
   throw new Error("MONGODB_URI is strictly required in production.")
 }
 
-mongoose
-  .connect(MONGODB_URI)
-  .then(() => {
-    console.log("Connected to MongoDB")
-    
-    // Only listen if not running in a serverless environment like Vercel
+let isConnected = false;
+
+const connectDB = async () => {
+  if (isConnected || mongoose.connection.readyState === 1) {
+    if (!isConnected) isConnected = true;
+    return;
+  }
+
+  try {
+    await mongoose.connect(MONGODB_URI);
+    isConnected = true;
+    console.log("Connected to MongoDB");
+
     if (!process.env.VERCEL) {
       const server = app.listen(PORT, HOST, () => {
-        console.log(`API server running at http://${HOST}:${PORT}`)
-      })
+        console.log(`API server running at http://${HOST}:${PORT}`);
+      });
 
       server.on("error", (err: NodeJS.ErrnoException) => {
         if (err.code === "EADDRINUSE") {
           console.error(
-            `Port ${PORT} is already in use. Stop the other process or set PORT in server/.env (e.g. PORT=4001).`,
-          )
-          console.error(`Windows: netstat -ano | findstr :${PORT}  then  taskkill /PID <pid> /F`)
+            `Port ${PORT} is already in use. Stop the other process or set PORT in server/.env (e.g. PORT=4001).`
+          );
+          console.error(
+            `Windows: netstat -ano | findstr :${PORT}  then  taskkill /PID <pid> /F`
+          );
         } else {
-          console.error(err)
+          console.error(err);
         }
-        process.exit(1)
-      })
+        process.exit(1);
+      });
     }
-  })
-  .catch((err) => {
-    console.error("MongoDB connection error:", err)
+  } catch (err) {
+    console.error("MongoDB connection error:", err);
     if (!process.env.VERCEL) {
-      process.exit(1)
+      process.exit(1);
     }
-  })
+  }
+};
+
+// Initialize connection
+connectDB();
 
 export default app
 

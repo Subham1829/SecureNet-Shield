@@ -30,6 +30,9 @@ export default function LandingPage() {
             <Link href="/dashboard" className="flex items-center gap-1.5 text-[15px] font-medium text-muted-foreground hover:text-foreground transition-colors">
               Dashboard
             </Link>
+            <Link href="/audit" className="flex items-center gap-1.5 text-[15px] font-medium text-muted-foreground hover:text-foreground transition-colors">
+              Audit Logs
+            </Link>
             <Link href="/feedback" className="flex items-center gap-1.5 text-[15px] font-medium text-muted-foreground hover:text-foreground transition-colors">
               Feedback
             </Link>
