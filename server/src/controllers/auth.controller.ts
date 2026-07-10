@@ -73,17 +73,13 @@ export const loginUser = catchAsync(async (req: Request, res: Response) => {
     return res.status(401).json({ error: "Invalid credentials." });
   }
 
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  user.otp = otp;
-  user.otpExpiresAt = new Date(Date.now() + 1 * 60 * 1000);
-  await user.save();
-
-  await sendOTPEmail(email, otp);
+  const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
 
   return res.json({
     success: true,
-    message: "Credentials verified. Please enter the OTP sent to your email.",
-    requiresOTP: true,
+    message: "Login verified successfully.",
+    token,
+    user: { id: user._id, fullName: user.fullName, email: user.email },
   });
 });
 
