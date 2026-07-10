@@ -83,67 +83,7 @@ export const loginUser = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-export const verifyOTP = catchAsync(async (req: Request, res: Response) => {
-  const { email, otp } = req.body;
-  const user = await User.findOne({ email });
 
-  if (!user) {
-    await logAction(
-      "FAILED_LOGIN",
-      `Failed OTP attempt for unknown email: ${email}`,
-      email,
-    );
-    return res.status(404).json({ error: "User not found." });
-  }
-
-  if (!user.otp || user.otp !== otp) {
-    await logAction(
-      "FAILED_LOGIN",
-      `Failed OTP attempt for email: ${email}`,
-      email,
-      user.id,
-    );
-    return res.status(400).json({ error: "Invalid OTP." });
-  }
-
-  if (!user.otpExpiresAt || user.otpExpiresAt < new Date()) {
-    return res.status(400).json({ error: "OTP has expired." });
-  }
-
-  user.otp = undefined;
-  user.otpExpiresAt = undefined;
-  await user.save();
-
-  const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
-
-  return res.json({
-    success: true,
-    message: "Login verified successfully.",
-    token,
-    user: { id: user._id, fullName: user.fullName, email: user.email },
-  });
-});
-
-export const resendOTP = catchAsync(async (req: Request, res: Response) => {
-  const { email } = req.body;
-  const user = await User.findOne({ email });
-
-  if (!user) {
-    return res.status(404).json({ error: "User not found." });
-  }
-
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  user.otp = otp;
-  user.otpExpiresAt = new Date(Date.now() + 1 * 60 * 1000);
-  await user.save();
-
-  await sendOTPEmail(email, otp);
-
-  return res.json({
-    success: true,
-    message: "A new OTP has been sent to your email.",
-  });
-});
 
 export const logoutUser = catchAsync(async (req: Request, res: Response) => {
   const authHeader = req.headers.authorization;
