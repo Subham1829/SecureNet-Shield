@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "../models/User.js";
 import { BlacklistedToken } from "../models/BlacklistedToken.js";
-import { sendOTPEmail, sendPasswordResetEmail } from "../lib/email.js";
+import { sendPasswordResetEmail } from "../lib/email.js";
 import { logAction } from "../lib/logger.js";
 import crypto from "crypto";
 
