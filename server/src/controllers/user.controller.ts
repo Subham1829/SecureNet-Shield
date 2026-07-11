@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { User } from "../models/User.js"
-import bcrypt from "bcrypt"
+import bcrypt from "bcryptjs"
 import { catchAsync } from "../utils/catchAsync.js"
 
 export const getMe = catchAsync(async (req: Request, res: Response) => {

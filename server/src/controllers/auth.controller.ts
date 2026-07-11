@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { catchAsync } from "../utils/catchAsync.js";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { User } from "../models/User.js";
 import { BlacklistedToken } from "../models/BlacklistedToken.js";
