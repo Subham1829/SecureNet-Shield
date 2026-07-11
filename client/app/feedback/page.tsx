@@ -1,4 +1,5 @@
 "use client"
+import { apiUrl } from "@/lib/api"
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
@@ -39,12 +40,10 @@ export default function FeedbackPage() {
   const [reviews, setReviews] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"
-
   const fetchReviews = async () => {
     try {
       const token = localStorage.getItem("token")
-      const res = await fetch(`${apiUrl}/api/feedback`, {
+      const res = await fetch(apiUrl("/api/feedback"), {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -66,7 +65,7 @@ export default function FeedbackPage() {
     try {
       setLoading(true)
       const token = localStorage.getItem("token")
-      const res = await fetch(`${apiUrl}/api/feedback`, {
+      const res = await fetch(apiUrl("/api/feedback"), {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
