@@ -15,7 +15,8 @@ if (process.env.NODE_ENV === "production" && !process.env.JWT_SECRET) {
 }
 
 export const registerUser = catchAsync(async (req: Request, res: Response) => {
-  const { fullName, email, password } = req.body;
+  const email = req.body.email.toLowerCase();
+  const { fullName, password } = req.body;
 
   const existingUser = await User.findOne({ email });
   if (existingUser) {
@@ -51,7 +52,8 @@ export const registerUser = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const loginUser = catchAsync(async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const email = req.body.email.toLowerCase();
+  const { password } = req.body;
 
   const user = await User.findOne({ email });
   if (!user) {

@@ -11,7 +11,6 @@ const transporter = nodemailer.createTransport({
 });
 
 
-
 export interface EmailUser {
   email: string;
 }
